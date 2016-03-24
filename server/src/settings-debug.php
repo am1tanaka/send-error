@@ -12,7 +12,7 @@ return [
         'view' => [
             'template_path' => __DIR__ . '/../templates/',
             'options' => [
-                'cache' => __DIR__ . '/../cache/'
+                'debug' => true,
             ]
         ],
 

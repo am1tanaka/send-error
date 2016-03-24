@@ -9,6 +9,20 @@ $container['renderer'] = function ($c) {
     return new Slim\Views\PhpRenderer($settings['template_path']);
 };
 
+// Register component on container
+$container['view'] = function($c) {
+    $settings = $c->get('settings')['view'];
+    $view = new \Slim\Views\Twig($settings['template_path'], [
+        $settings['options']
+    ]);
+    $view->addExtension(new \Slim\Views\TwigExtension(
+        $c['router'],
+        $c['request']->getUri()
+    ));
+
+    return $view;
+};
+
 // monolog
 $container['logger'] = function ($c) {
     $settings = $c->get('settings')['logger'];

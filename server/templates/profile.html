@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>User List</title>
+</head>
+<body>
+    <h1>User List</h1>
+    <ul>
+        <li><a href="{{ path_for('profile', {'name': name}) }}">{{name}}</a></li>
+    </ul>
+</body>
+</html>
