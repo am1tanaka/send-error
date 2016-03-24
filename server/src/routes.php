@@ -1,17 +1,20 @@
 <?php
+require_once("./src/CError.php");
+
 // Routes
 
-$app->get('/[{name}]', function ($request, $response, $args) {
-    // Sample log message
-    $this->logger->info("Slim-Skeleton '/' route");
+/** テスト*/
+$app->get('/test', function($request, $respone, $args) {
+    $data = '{"clientWidth":1080,"clientHeight":25,"doNotTrack":"unspecified","oscpu":"Intel Mac OS X 10.11","productSub":"20100101","cookieEnabled":true,"buildID":"20160315153207","appCodeName":"Mozilla","appName":"Netscape","appVersion":"5.0 (Macintosh)","platform":"MacIntel","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:45.0) Gecko/20100101 Firefox/45.0","product":"Gecko","language":"ja","onLine":true}';
 
-    // Render index view
-    return $this->renderer->render($response, 'index.phtml', $args);
+    return $this->view->render($respone, 'view.html', [
+        'datas' => CError::convJSON2Array($data)
+    ]);
 });
 
-/** Twig Test*/
-$app->get('/twig/{name}', function($request, $response, $args) {
-    return $this->view->render($response, 'profile.html', [
-        'name' => $args['name']
+/** キーを指定して該当するデータがあれば表示する*/
+$app->get('/{key}', function($request, $response, $args) {
+    return $this->view->render($response, 'view.html', [
+        'key' => $args['key']
     ]);
-})->setName('profile');
+})->setName('view');

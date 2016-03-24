@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <div id='disp'>
+        test
+    </div>
+    <script>
+    // 画面サイズ
+    var datas = {};
+    datas.clientWidth = document.body.clientWidth;
+    datas.clientHeight = document.body.clientHeight;
+    datas.screenWidth = window.screenWidth;
+    datas.screenHeight = window.screenHeight;
+    // ナビゲーターデータ
+    for(var data in navigator) {
+        if (navigator[data] == "")
+        {
+            continue;
+        }
+        if (    ((typeof navigator[data]) != "function")
+            &&  ((typeof navigator[data]) != "object")) {
+            datas[data] = navigator[data];
+        }
+    }
+
+        alert(JSON.stringify(datas));
+    </script>
+</body>
+</html>
