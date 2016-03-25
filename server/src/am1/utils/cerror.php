@@ -4,6 +4,8 @@
  * @copyright 2016 YuTanaka@AmuseOne
  */
 
+namespace Am1\Utils;
+
 class CError {
     /**
      * 渡したオブジェクトを、連想配列にして返す

@@ -25,3 +25,9 @@ $container['logger'] = function ($c) {
     $logger->pushHandler(new Monolog\Handler\StreamHandler($settings['path'], Monolog\Logger::DEBUG));
     return $logger;
 };
+
+// CError
+$container['utils_error'] = function($c) {
+    $error = new Am1\Utils\CError();
+    return $error;
+};

@@ -1,5 +1,5 @@
 <?php
-require_once("./src/CError.php");
+require_once("./src/am1/utils/cerror.php");
 
 // Routes
 
@@ -8,7 +8,7 @@ $app->get('/test', function($request, $respone, $args) {
     $data = '{"clientWidth":1080,"clientHeight":25,"doNotTrack":"unspecified","oscpu":"Intel Mac OS X 10.11","productSub":"20100101","cookieEnabled":true,"buildID":"20160315153207","appCodeName":"Mozilla","appName":"Netscape","appVersion":"5.0 (Macintosh)","platform":"MacIntel","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:45.0) Gecko/20100101 Firefox/45.0","product":"Gecko","language":"ja","onLine":true}';
 
     return $this->view->render($respone, 'view.html', [
-        'datas' => CError::convJSON2Array($data)
+        'datas' => $this->utils_error->convJSON2Array($data)
     ]);
 });
 

@@ -3,3 +3,4 @@
 !/logs/README.md
 /composer.lock
 /test/testConfig.php
+config-debug.php
