@@ -1,6 +1,8 @@
 <?php
 return [
     'settings' => [
+        'app' => require __DIR__ . '/settings-app.php',
+
         'displayErrorDetails' => true, // set to false in production
 
         // Renderer settings

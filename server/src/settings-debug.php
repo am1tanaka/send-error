@@ -1,6 +1,8 @@
 <?php
 return [
     'settings' => [
+        'app' => require __DIR__ . '/settings-app.php',
+
         'displayErrorDetails' => true, // set to false in production
 
         // Renderer settings
@@ -33,7 +35,7 @@ return [
                 'charset' => 'utf8',
                 'collation' => 'utf8_unicode_ci',
                 'prefix' => ''
-            ]
+            ],
         ]
     ],
 ];
