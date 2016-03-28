@@ -1,5 +1,4 @@
 <?php
-require_once("./server/test/testConfig.php");
 
 class MailTest extends PHPUnit_Framework_TestCase
 {

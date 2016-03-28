@@ -1,20 +1,19 @@
 <?php
+/**
+ * 本番サーバー用の設定
+ * @copyright 2016 YuTanaka@AmuseOne
+ */
 return [
     'settings' => [
         'app' => require __DIR__ . '/settings-app.php',
 
-        'displayErrorDetails' => true, // set to false in production
-
-        // Renderer settings
-        'renderer' => [
-            'template_path' => __DIR__ . '/../templates/',
-        ],
+        'displayErrorDetails' => false, // set to false in production
 
         // Twig settings
         'view' => [
             'template_path' => __DIR__ . '/../templates/',
             'options' => [
-                'debug' => true,
+                'cache' => __DIR__ . '/../cache/',
             ]
         ],
 
