@@ -27,7 +27,7 @@ $container['logger'] = function ($c) {
 };
 
 // CError
-$container['utils_error'] = function($c) {
+$container['util_error'] = function($c) {
     $error = new Am1\Utils\CError();
     return $error;
 };
