@@ -85,6 +85,15 @@ class CError {
         return json_decode($data['description'], true);
     }
 
+    /**
+     * 指定のキーのデータを削除。削除した行数を返す
+     * @param string $key 取り出したいキーコード
+     * @return 削除した行数を返す
+     */
+    public function deleteDataFromDB($key) {
+        return ErrorTable::where('keycode', '=', $key)->delete();
+    }
+
 }
 
  ?>

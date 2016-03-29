@@ -6,11 +6,13 @@
 
 require_once(__DIR__."/../../src/am1/utils/am1util.php");
 require_once(__DIR__."/../../src/am1/utils/cerror.php");
+require_once(__DIR__."/../../src/am1/utils/cobserve-access.php");
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Am1\Utils\Am1Util;
 use Am1\Utils\CError;
+use Am1\Utils\CObserveAccess;
 
 // id
 // keycode varchar(16)
@@ -26,6 +28,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     var $pdo_conn = null;
     var $settings;
     static $cerror = null;
+    static $cobserve = null;
 
     /**
      * TestCaseからデータベースへの接続
@@ -52,12 +55,20 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
         if (self::$cerror == null) {
             self::$cerror = new CError($this->settings['settings']['db']['config']);
         }
+        if (self::$cobserve == null) {
+            self::$cobserve = new CObserveAccess(
+                [   "ADMIN_EMAIL"=> TEST_TO_ADDR,
+                    "FROM_EMAIL"=> TEST_FROM_ADDR
+                ]
+            );
+        }
 
         return new PHPUnit_Extensions_Database_DataSet_YamlDataSet(
             __DIR__ . '/init-error-data.yml');
     }
 
     /**
+     * @group cerror
      * データ登録
      * 指定の文字列をデータベースに登録する
      */
@@ -88,6 +99,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
+     * @group cerror
      * データの取得
      * メールにCSVを添付して送信
      */
@@ -103,17 +115,81 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
+     * @group cerror
      * データの削除
      */
+    public function testDelete() {
+        $conn = $this->getConnection();
 
+        // 最初のデータ個数をチェック
+        $this->assertEquals(1, $conn->getRowCount("error_data"));
 
-    /**相棒
-     * DBに接続
+        // エラーチェック
+        $fail = self::$cerror->deleteDataFromDB("0");
+        $this->assertEquals(0, $fail);
+
+        // データを削除
+        $succ = self::$cerror->deleteDataFromDB("0123456789abcdef");
+        $this->assertEquals(1, $succ);
+
+        // 残り個数をチェック
+        $this->assertEquals(0, $conn->getRowCount("error_data"));
+    }
+
+    /**
+     * @group cobserve
+     * 失敗の報告
      */
-    public function _testConnection() {
-        $results = Capsule::table(TABLE_ERROR)->get();
+    public function testEntryInvalidAccess() {
+        // エラー許容
+        for ($i=0 ; $i<4 ; $i++) {
+            $res = self::$cobserve->entryInvalidAccess(
+                "localhost",
+                "DbTest",
+                "error"
+            );
+            $this->assertTrue($res, "loop:".$i);
+        }
 
-        $this->assertNotNull($results);
+        // 一時停止&報告
+        $res = self::$cobserve->entryInvalidAccess(
+            "localhost",
+            "DbTest",
+            "error"
+        );
+        $this->assertFalse($res, "pause and sendmail");
+
+        // 一時停止&報告なし
+        $res = self::$cobserve->entryInvalidAccess(
+            "localhost",
+            "DbTest",
+            "error"
+        );
+        $this->assertFalse($res, "pause only");
+    }
+
+    /**
+     * @group cobserve
+     * アクセス失敗の解除テスト
+     */
+    public function testReleaseInvalidAccess() {
+
+    }
+
+    /**
+     * @group cobserve
+     * NGリストの登録テスト
+     */
+    public function testNG() {
+        // 古いデータを強制的に登録
+    }
+
+    /**
+     * @group cobserve
+     * NGリストの解除テスト
+     */
+    public function testReleaseNG() {
+
     }
 
     /**
