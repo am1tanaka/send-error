@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 use Am1\Utils\Am1Util;
 use Am1\Utils\CError;
 use Am1\Utils\CObserveAccess;
+use Am1\Utils\InvalidAccessTable;
 
 // id
 // keycode varchar(16)
@@ -140,7 +141,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * @group cobserve
      * 失敗の報告
      */
-    public function testEntryInvalidAccess() {
+    public function _testEntryInvalidAccess() {
         // エラー許容
         for ($i=0 ; $i<4 ; $i++) {
             $res = self::$cobserve->entryInvalidAccess(
@@ -172,7 +173,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * @group cobserve
      * カラムより大きいデータを送付した時の動作確認
      */
-    public function testLongData() {
+    public function _testLongData() {
         // 送信
         for ($i=0 ; $i<5 ; $i++) {
             $res = self::$cobserve->entryInvalidAccess(
@@ -206,7 +207,40 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * アクセス失敗の解除テスト
      */
     public function testReleaseInvalidAccess() {
+        // エラーの登録
+        for ($i=0 ; $i<3 ; $i++) {
+            self::$cobserve->entryInvalidAccess(
+                "localhost",
+                "DbTest",
+                "error"
+            );
+        }
 
+        // キーを取り出す
+        $row = InvalidAccessTable::where("remote_host", "like", "localhost");
+        $this->assertEquals(3, $row->count(), "get key.");
+
+        // 成功
+        $keycode = $row->take(1)->get();
+        $res = self::$cobserve->releaseInvalidAccess($keycode[0]->keycode, "remotehost");
+        $this->assertEquals(3, $res, "delete response.");
+
+        // DBの中身をチェック
+        $end = InvalidAccessTable::all()->count();
+        $this->assertEquals(0, $end, "delete complete check.");
+    }
+
+    /**
+     * 不正な解放ミスを繰り返して、ホストが停止するかを確認
+     */
+    public function testReleaseMissReport() {
+        for($i=0 ; $i<4 ; $i++) {
+            $res = self::$cobserve->releaseInvalidAccess("invalid", "remotehost");
+            $this->assertEquals(0, $res);
+        }
+
+        // エラー報告
+        self::$cobserve->releaseInvalidAccess("invalid", "remotehost");
     }
 
     /**

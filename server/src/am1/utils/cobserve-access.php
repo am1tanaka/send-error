@@ -35,6 +35,8 @@ class CObserveAccess {
         "FROM_NAME" => "AmuseOneSystem" // メール送信元名
     ];
 
+    /** このシステムの名前*/
+    const MY_APP_NAME = "Am1ObserveAccess";
     /** リモートホストの長さ*/
     const REMOTE_HOST_LENGTH = 64;
     /** アプリ名の長さ*/
@@ -104,10 +106,22 @@ class CObserveAccess {
 
     /**
      * アクセスに成功したときに呼び出す関数。指定のホストのデータを削除する
-     * @param string $host リモートホスト
+     * @param string $key 削除するホストのキーコード
+     * @param string $remote_host 接続元のホスト。キーがなかった時のエラー処理
+     * @return int 削除した件数。0の時は失敗
      */
-    public function releaseInvalidAccess($host) {
-        // 指定のホストのデータを削除
+    public function releaseInvalidAccess($key, $remote_host) {
+        $key = substr($key, 0, $this->settings['KEYCODE_LENGTH']);
+        $host = InvalidAccessTable::where("keycode", "like", $key);
+
+        // 見つからない場合は不正なアクセスなので、不正なアクセスを登録
+        if ($host->count() == 0) {
+            $this->entryInvalidAccess($remote_host, self::MY_APP_NAME, "不正なキーでのアクセス失敗の削除要求:$key");
+            return 0;
+        }
+
+        // 指定のホストを削除
+        return InvalidAccessTable::where("remote_host", "like", $host->take(1)->get()[0]->remote_host)->delete();
     }
 
     /**
