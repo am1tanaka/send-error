@@ -31,18 +31,24 @@ class CObserveAccess {
         "NG_COUNT" => 10,       // 一度も成功しないでこの回数失敗し続けた場合、NGリストに追加する
         "KEYCODE_LENGTH" => 16, // キーコードの文字数
         "ADMIN_EMAIL" => "",    // 管理者メールアドレス
-        "FROM_EMAIL" => ""      // 送信元メールアドレス
+        "FROM_EMAIL" => "",     // 送信元メールアドレス
+        "FROM_NAME" => "AmuseOneSystem" // メール送信元名
     ];
+
+    /** リモートホストの長さ*/
+    const REMOTE_HOST_LENGTH = 64;
+    /** アプリ名の長さ*/
+    const APP_NAME_LENGTH = 64;
+    /** エラーメッセージの長さ*/
+    const ERROR_LENGTH = 255;
 
     /**
      * コンストラクタ
      */
     function __construct($set=[]) {
         // 設定を上書き
-        foreach($this->settings as $k) {
-            if (array_key_exists($k, $set)) {
-                $this->settings[$k] = $set[$k];
-            }
+        foreach($set as $k => $v) {
+            $this->settings[$k] = $v;
         }
     }
 
@@ -58,6 +64,11 @@ class CObserveAccess {
         if($this->isNG($host)) {
             return false;
         }
+
+        // データの長さを調整
+        $host = substr($host, 0, self::REMOTE_HOST_LENGTH);
+        $appname = substr($appname, 0, self::APP_NAME_LENGTH);
+        $err = substr($err, 0, self::ERROR_LENGTH);
 
         // データを登録する
         $newtbl = new InvalidAccessTable;
@@ -81,7 +92,7 @@ class CObserveAccess {
         if ($cnt >= $this->settings['PAUSE_COUNT']) {
             // ぴったりの時は、システム管理者に報告
             if ($cnt == $this->settings['PAUSE_COUNT']) {
-                $this->reportPause($host);
+                $this->reportPause($host, $appname, $err, $newtbl->keycode);
             }
 
             return false;
@@ -102,8 +113,28 @@ class CObserveAccess {
     /**
      * 一時停止に伴う管理者への報告
      */
-    function reportPause($host) {
+    function reportPause($host, $appname, $err, $keycode) {
+        $subject = "[AM1-SYS]ホストの停止レポート";
+        $mes  = "以下のホストからのアクセスを一時停止しました。\n";
+        $mes .= "\n";
+        $mes .= "APP   : ".$appname."\n";
+        $mes .= "HOST  : ".$host."\n";
+        $mes .= "DOMAIN: ".@gethostbyaddr($host)."\n";
+        $mes .= "RESUME: ".INVALID_ROOT."/".$keycode."/release\n";
+        $mes .= "ADD NG: ".INVALID_ROOT."/".$keycode."/ng\n";
+        $mes .= "ERROR :\n";
+        $mes .= "----\n";
+        $mes .= $err."\n";
+        $mes .= "----\n\n";
+        $mes .= "AmuseOne Service SystemMail.\n";
 
+        Am1Util::sendMail(
+            $this->settings['ADMIN_EMAIL'],
+            $this->settings['FROM_EMAIL'],
+            $this->settings['FROM_NAME'],
+            $subject,
+            $mes
+        );
     }
 
     /**

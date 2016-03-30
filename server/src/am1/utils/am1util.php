@@ -19,6 +19,26 @@ class Am1Util {
 
     	return $wd;
     }
+
+    /**
+     * メールを送信
+     * @param string $to 宛先
+     * @param string $from 送信元メールアドレス
+     * @param string $fromname 送信元名
+     * @param string $subject 件名
+     * @param string $body 本文
+     * @return bool true=成功 / false=失敗
+     */
+    public static function sendMail($to, $from, $fromname, $subject, $body) {
+        mb_language("Japanese");
+        mb_internal_encoding("UTF-8");
+        return mb_send_mail(
+            $to,
+            $subject,
+            $body,
+            "From :".mb_encode_mimeheader($fromname)."<".$from.">"
+        );
+    }
 }
 
  ?>
