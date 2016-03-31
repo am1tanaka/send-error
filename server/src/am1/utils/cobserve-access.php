@@ -130,7 +130,7 @@ class CObserveAccess {
      * 一時停止に伴う管理者への報告
      */
     function reportPause($host, $appname, $err, $keycode) {
-        $subject = "[AM1-SYS]ホストの停止レポート";
+        $subject = "[AM1-SYS]ホストの一時停止レポート";
         $mes  = "以下のホストからのアクセスを一時停止しました。\n";
         $mes .= "\n";
         $mes .= "APP   : ".$appname."\n";
@@ -167,6 +167,9 @@ class CObserveAccess {
             $new->remote_host = $host;
             $new->keycode = Am1Util::makeRandWords($this->settings['KEYCODE_LENGTH']);
             $new->save();
+
+            // メールを送信
+            $this->reportNG($host, $new->keycode);
         }
         else {
             $ng->get()[0]->touch();
@@ -174,11 +177,41 @@ class CObserveAccess {
     }
 
     /**
+     * NGリスト登録に伴う管理者への報告
+     */
+    function reportNG($host, $keycode) {
+        $host = substr($host, 0, self::REMOTE_HOST_LENGTH);
+        $subject = "[AM1-SYS]NGホストの追加レポート";
+        $mes  = "以下のホストの操作ミスが規定数を超えたので、NGリストに追加しました。\n";
+        $mes .= "\n";
+        $mes .= "HOST  : ".$host."\n";
+        $mes .= "DOMAIN: ".@gethostbyaddr($host)."\n";
+        $mes .= "NG解除 : ".INVALID_ROOT."/ng/".$keycode."/release\n";
+        $mes .= "\n----\n";
+        $mes .= "AmuseOne Service SystemMail.\n";
+
+        Am1Util::sendMail(
+            $this->settings['ADMIN_EMAIL'],
+            $this->settings['FROM_EMAIL'],
+            $this->settings['FROM_NAME'],
+            $subject,
+            $mes
+        );
+    }
+
+    /**
      * 指定のキーコードのホストをNGリストから削除
      * @param string $keycode 削除
+     * @param string $remote_host アクセスしてきたホスト名
      */
-    public function releaseNGList($keycode) {
-
+    public function releaseNGList($keycode, $host) {
+        $keycode = substr($keycode, 0, $this->settings['KEYCODE_LENGTH']);
+        // 削除
+        $count = NGIPsTable::where('keycode', 'like', $keycode)->delete();
+        // 削除した数が0の時、不正なアクセス
+        if ($count == 0) {
+            $this->entryInvalidAccess($host, self::MY_APP_NAME, "不正なキーでのNG削除要求:$keycode");
+        }
     }
 
     /**

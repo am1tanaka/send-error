@@ -257,7 +257,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * @group cobserve
      * NGリストの登録テスト
      */
-    public function testNG() {
+    public function _testNG() {
         $res = self::$cobserve->isNG("localhost");
         $this->assertEquals(0, $res, "check before set ng.");
 
@@ -282,8 +282,31 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * @group cobserve
      * NGリストの解除テスト
      */
-    public function testReleaseNG() {
+    public function _testReleaseNG() {
+        // 登録
+        self::$cobserve->entryNGList("localhost");
+        $res = self::$cobserve->isNG("localhost");
+        $this->assertEquals(1, $res, "check entry ng success.");
 
+        // キーコードを取得
+        $key = NGIPsTable::where('remote_host', 'like', 'localhost')->get()[0];
+
+        // 削除
+        self::$cobserve->releaseNGList($key->keycode, "remote_host");
+        $res = self::$cobserve->isNG("localhost");
+        $this->assertEquals(0, $res, "check release ng list.");
+    }
+
+    /**
+     * @group cobserve
+     * 不正なNGリストの登録リクエストの要求をブロックするテスト
+     * メールが送信されればOK
+     */
+    public function _testInvalidReleaseNG() {
+        // 不正な要求
+        for ($i=0 ; $i<5 ; $i++) {
+            self::$cobserve->entryNGList("none", "remote_host");
+        }
     }
 
     /**
