@@ -17,7 +17,7 @@ $app->get('/invalid-access/{key}/release', function($request, $response, $args) 
             'info' => 'ok'
         ]);
     }
-    return $this->view->render($respone, 'info.html', [
+    return $this->view->render($response, 'info.html', [
         'info' => '指定のホストの一時停止を解除しました。'
     ]);
 });
