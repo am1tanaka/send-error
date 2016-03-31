@@ -14,6 +14,7 @@ use Am1\Utils\Am1Util;
 use Am1\Utils\CError;
 use Am1\Utils\CObserveAccess;
 use Am1\Utils\InvalidAccessTable;
+use Am1\Utils\NGIPsTable;
 
 // id
 // keycode varchar(16)
@@ -206,7 +207,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * @group cobserve
      * アクセス失敗の解除テスト
      */
-    public function testReleaseInvalidAccess() {
+    public function _testReleaseInvalidAccess() {
         // エラーの登録
         for ($i=0 ; $i<3 ; $i++) {
             self::$cobserve->entryInvalidAccess(
@@ -233,7 +234,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * 不正な解放ミスを繰り返して、ホストが停止するかを確認
      */
-    public function testReleaseMissReport() {
+    public function _testReleaseMissReport() {
         for($i=0 ; $i<4 ; $i++) {
             $res = self::$cobserve->releaseInvalidAccess("invalid", "remotehost");
             $this->assertEquals(0, $res);
@@ -245,10 +246,36 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @group cobserve
+     * 指定のHOSTがNGリストにあるかを確認
+     */
+    public function _testIsNG() {
+        $res = self::$cobserve->isNG("localhost");
+        $this->assertEquals(0, $res);
+    }
+
+    /**
+     * @group cobserve
      * NGリストの登録テスト
      */
     public function testNG() {
-        // 古いデータを強制的に登録
+        $res = self::$cobserve->isNG("localhost");
+        $this->assertEquals(0, $res, "check before set ng.");
+
+        self::$cobserve->entryNGList("localhost");
+        $res = self::$cobserve->isNG("localhost");
+        $this->assertEquals(1, $res, "check after set ng.");
+        $update = NGIPsTable::where('remote_host', 'like', 'localhost')->get();
+
+        sleep(1);
+
+        self::$cobserve->entryNGList("localhost");
+        $res = self::$cobserve->isNG("localhost");
+        $this->assertEquals(1, $res, "check double set ng.");
+        $update2 = NGIPsTable::where('remote_host', 'like', 'localhost')->get();
+        $this->assertNotEquals($update[0]->updated_at, $update2[0]->updated_at, "check update.");
+
+        $res = self::$cobserve->isNG("another");
+        $this->assertEquals(0, $res, "check another host ng.");
     }
 
     /**

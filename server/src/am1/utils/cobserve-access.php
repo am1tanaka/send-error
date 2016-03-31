@@ -13,11 +13,13 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 /** 不正アクセステーブル*/
 class InvalidAccessTable extends Eloquent {
     protected $table = 'invalid_access';
+    protected $guarded = array('id');
 }
 
 /** NGテーブル*/
 class NGIPsTable extends Eloquent {
     protected $table = 'ng_ips';
+    protected $guarded = array('id');
 }
 
 /**
@@ -156,7 +158,19 @@ class CObserveAccess {
      * @param string $host NGリストに追加するホスト
      */
     function entryNGList($host) {
-
+        $host = substr($host, 0, self::REMOTE_HOST_LENGTH);
+        $ng = NGIPsTable::where('remote_host', 'like', $host);
+        // 指定のホストがあるかを確認
+        if ($ng->count() == 0) {
+            // 新規に登録
+            $new = new NGIPsTable;
+            $new->remote_host = $host;
+            $new->keycode = Am1Util::makeRandWords($this->settings['KEYCODE_LENGTH']);
+            $new->save();
+        }
+        else {
+            $ng->get()[0]->touch();
+        }
     }
 
     /**
@@ -170,10 +184,11 @@ class CObserveAccess {
     /**
      * 指定のホストがNGリストに登録されているかを確認
      * @param string $host 確認するホスト
-     * @return true=NG / false=NGじゃない
+     * @return 0=NGじゃない / 1=NG
      */
     public function isNG($host) {
-        return false;
+        $host = substr($host, 0, self::REMOTE_HOST_LENGTH);
+        return NGIPsTable::where('remote_host', 'like', $host)->count();
     }
 }
 
