@@ -1,7 +1,26 @@
 <?php
 require_once("./src/am1/utils/cerror.php");
+require_once("./src/am1/utils/cobserve-access.php");
 
 // Routes
+
+// 不正アクセスAPI
+/** 一時停止を解除する*/
+$app->get('/invalid-access/{key}/release', function($request, $response, $args) {
+    // エラーを初期化
+    $this->util_error;
+
+    $res = $this->util_observe_access->releaseInvalidAccess($args['key'], $_SERVER['REMOTE_ADDR']);
+    if ($res == 0) {
+        // 失敗
+        return $this->view->render($response, 'info.html', [
+            'info' => 'ok'
+        ]);
+    }
+    return $this->view->render($respone, 'info.html', [
+        'info' => '指定のホストの一時停止を解除しました。'
+    ]);
+});
 
 /** テスト*/
 $app->get('/test', function($request, $respone, $args) {

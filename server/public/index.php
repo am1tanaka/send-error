@@ -7,10 +7,12 @@ if (PHP_SAPI == 'cli-server') {
         return false;
     }
 
-    $settings = require __DIR__ . '/../src/settings-debug.php';
+    require __DIR__ . '/../src/config/config-mac.php';
+    $settings = require __DIR__ . '/../src/settings.php';
 }
 else {
-    $settings = require __DIR__ . '/../src/settings.php';
+    require __DIR__ . '/../src/config/config-dev.php';
+    $settings = require __DIR__ . '/../src/settings-rel.php';
 }
 
 require __DIR__ . '/../vendor/autoload.php';

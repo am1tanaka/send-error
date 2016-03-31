@@ -28,6 +28,18 @@ $container['logger'] = function ($c) {
 
 // CError
 $container['util_error'] = function($c) {
-    $error = new Am1\Utils\CError();
+    $settings = $c->get('settings')['db'];
+
+    // クラスを初期化
+    $error = new Am1\Utils\CError($settings['config']);
     return $error;
+};
+
+// CObserveAccess
+$container['util_observe_access'] = function($c) {
+    $obs = new Am1\Utils\CObserveAccess([
+        "ADMIN_EMAIL" => ADMIN_ADDR,    // 管理者メールアドレス
+        "FROM_EMAIL" => SYS_ADDR     // 送信元メールアドレス
+    ]);
+    return $obs;
 };
