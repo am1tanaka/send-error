@@ -70,9 +70,10 @@ class WebTest extends PHPUnit_Extensions_Selenium2TestCase {
     }
 
     /**
+     * @group cobserve
      * NGリストへの登録呼び出しのテスト
      */
-    public function testEntryNG() {
+    public function _testEntryNG() {
         // 一時停止にまずは登録
         self::$cobserve->entryInvalidAccess('localhost', 'SeleniumTest', 'testEntryNG');
         // localhostのキーを取り出す
@@ -81,7 +82,7 @@ class WebTest extends PHPUnit_Extensions_Selenium2TestCase {
 
         // NGリストを全て削除
         if (NGIPsTable::all()->count() > 0) {
-            NGIPsTable::all()->delete();            
+            NGIPsTable::all()->delete();
         }
         $this->url(self::DOMAIN.self::OBSERVE_URL."/$key/ng");
 
@@ -90,9 +91,10 @@ class WebTest extends PHPUnit_Extensions_Selenium2TestCase {
     }
 
     /**
+     * @group cobserve
      * 不正なNGリスト登録の呼び出しテスト
      */
-    public function testInvalidEntryNG() {
+    public function _testInvalidEntryNG() {
         // 現在のアクセス失敗回数を数える
         $before = InvalidAccessTable::all()->count();
 
@@ -108,6 +110,49 @@ class WebTest extends PHPUnit_Extensions_Selenium2TestCase {
         $this->assertEquals($before+5, $after);
     }
 
+    /**
+     * @group cobserve
+     * NGを解除するテスト
+     */
+    public function testReleaseNG() {
+        $key = "";
+
+        // NGがあるか
+        if (NGIPsTable::all()->count() == 0) {
+            self::$cobserve->entryNGListWithHost('localhost');
+        }
+
+        // NGを登録
+        $this->assertEquals(1, NGIPsTable::all()->count());
+        $key = NGIPsTable::get()[0]->keycode;
+
+        // NGを解除
+        $this->url(self::DOMAIN.self::OBSERVE_URL."/ng/$key/release");
+
+        // 成功チェック
+        $this->assertStringStartsWith('指定のホスト', $this->byId('info')->text());
+    }
+
+    /**
+     * @group cobserve
+     * 無効なキーでNGを繰り返して一時停止させるテスト
+     */
+    public function testInvalidReleaseNG() {
+        // 現在のアクセス失敗回数を数える
+        $before = InvalidAccessTable::all()->count();
+
+        $key = "invalidkey";
+
+        $this->url(self::DOMAIN.self::OBSERVE_URL."/ng/$key/release");
+        $this->url(self::DOMAIN.self::OBSERVE_URL."/ng/$key/release");
+        $this->url(self::DOMAIN.self::OBSERVE_URL."/ng/$key/release");
+        $this->url(self::DOMAIN.self::OBSERVE_URL."/ng/$key/release");
+        $this->url(self::DOMAIN.self::OBSERVE_URL."/ng/$key/release");
+
+        // 5つふえていることを確認
+        $after = InvalidAccessTable::all()->count();
+        $this->assertEquals($before+5, $after);
+    }
 }
 
 ?>

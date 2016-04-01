@@ -88,7 +88,7 @@ class CObserveAccess {
         $hostapp = InvalidAccessTable::where('remote_host', 'like', $host)->where('app_name', 'like', $appname);
         $cnt = $hostapp->count();
         if ($cnt >= $this->settings['NG_COUNT']) {
-            entryNGListWithHost($host);
+            $this->entryNGListWithHost($host);
             return true;
         }
 
@@ -193,7 +193,7 @@ class CObserveAccess {
      * 指定のホストをNGリストに追加
      * @param string $host NGリストに追加するホスト
      */
-    function entryNGListWithHost($host) {
+    public function entryNGListWithHost($host) {
         $host = substr($host, 0, self::REMOTE_HOST_LENGTH);
         $ng = NGIPsTable::where('remote_host', 'like', $host);
         // 指定のホストがあるかを確認
@@ -240,15 +240,22 @@ class CObserveAccess {
      * 指定のキーコードのホストをNGリストから削除
      * @param string $keycode 削除
      * @param string $remote_host アクセスしてきたホスト名
+     * @return stringの時、削除したホスト / false=キーコード無効
      */
     public function releaseNGList($keycode, $host) {
         $keycode = substr($keycode, 0, $this->settings['KEYCODE_LENGTH']);
+
         // 削除
-        $count = NGIPsTable::where('keycode', 'like', $keycode)->delete();
-        // 削除した数が0の時、不正なアクセス
-        if ($count == 0) {
+        $where = NGIPsTable::where('keycode', 'like', $keycode);
+        // 数が0の時、不正なアクセス
+        if ($where->count() == 0) {
             $this->entryInvalidAccess($host, self::MY_APP_NAME, "不正なキーでのNG削除要求:$keycode");
+            return false;
         }
+
+        $ret = $where->get()[0]->remote_host;
+        $where->delete();
+        return $ret;
     }
 
     /**
