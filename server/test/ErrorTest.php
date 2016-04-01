@@ -8,7 +8,7 @@ namespace ErrorTest;
 //require_once("./server/test/testConfig.php");
 //require_once("./server/src/am1/utils/cerror.php");
 //require_once("./server/vendor/autoload.php");
-require __DIR__ . '/../vendor/autoload.php';
+//require __DIR__ . '/../vendor/autoload.php';
 
 class ErrorTest extends \PHPUnit_Framework_TestCase
 {

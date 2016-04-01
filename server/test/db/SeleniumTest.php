@@ -14,12 +14,13 @@ use Am1\Utils\InvalidAccessTable;
 use Am1\Utils\NGIPsTable;
 
 /** Seleniumの継承*/
-class WebTest extends PHPUnit_Extensions_Selenium2TestCase {
+class WebTest extends PHPUnit_Extensions_Selenium2TestCase
+{
     const DOMAIN = "http://0.0.0.0:8080";
     const OBSERVE_URL = "/invalid-access";
-    static $cerror = null;
-    static $cobserve = null;
-    var $settings = "";
+    private static $cerror = null;
+    private static $cobserve = null;
+    private  $settings = "";
 
     protected function setUp() {
         $this->setBrowser('firefox');

@@ -20,7 +20,8 @@ use Am1\Utils\NGIPsTable;
 // keycode varchar(16)
 // description text
 
-class ErrorTable extends Eloquent {
+class ErrorTable extends Eloquent
+{
     protected $table = 'error_data';
 }
 
@@ -39,7 +40,8 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     {
         if ($this->pdo_conn == null) {
             if (self::$pdo == null) {
-                self::$pdo = new PDO('mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset=utf8', TEST_DB_USER, TEST_DB_PASS);
+                self::$pdo = new PDO(
+                'mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset=utf8', TEST_DB_USER, TEST_DB_PASS);
             }
 
             $this->pdo_conn = $this->createDefaultDBConnection(self::$pdo);
@@ -68,7 +70,8 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
         }
 
         return new PHPUnit_Extensions_Database_DataSet_YamlDataSet(
-            __DIR__ . '/init-error-data.yml');
+        __DIR__ . '/init-error-data.yml'
+        );
     }
 
     /**
@@ -150,7 +153,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     public function _testEntryInvalidAccess()
     {
         // エラー許容
-        for ($i=0 ; $i<4 ; $i++) {
+        for ($i=0; $i<4; $i++) {
             $res = self::$cobserve->entryInvalidAccess(
                 "localhost",
                 "DbTest",
@@ -183,7 +186,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     public function _testLongData()
     {
         // 送信
-        for ($i=0 ; $i<5 ; $i++) {
+        for ($i=0; $i<5; $i++) {
             $res = self::$cobserve->entryInvalidAccess(
                 "0123456789112345678921234567893123456789412345678951234567896123456789",
                 "0123456789112345678921234567893123456789412345678951234567896123456789",
@@ -202,7 +205,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function _testSecurity()
     {
-        for ($i=0 ; $i<5 ; $i++) {
+        for ($i=0; $i<5; $i++) {
             $res = self::$cobserve->entryInvalidAccess(
                 "localhost",
                 '"',
@@ -218,7 +221,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     public function _testReleaseInvalidAccess()
     {
         // エラーの登録
-        for ($i=0 ; $i<3 ; $i++) {
+        for ($i=0; $i<3; $i++) {
             self::$cobserve->entryInvalidAccess(
                 "localhost",
                 "DbTest",
@@ -245,7 +248,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function _testReleaseMissReport()
     {
-        for($i=0 ; $i<4 ; $i++) {
+        for($i=0; $i<4; $i++) {
             $res = self::$cobserve->releaseInvalidAccess("invalid", "remotehost");
             $this->assertEquals(0, $res);
         }
@@ -318,7 +321,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     public function _testInvalidReleaseNG()
     {
         // 不正な要求
-        for ($i=0 ; $i<5 ; $i++) {
+        for ($i=0; $i<5; $i++) {
             self::$cobserve->entryNGList("none", "remote_host");
         }
     }
@@ -356,4 +359,3 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
         $this->assertEquals(1, $this->getConnection()->getRowCount("error_data"), "entry data test");
     }
 }
- ?>
