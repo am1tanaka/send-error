@@ -4,7 +4,7 @@
 $container = $app->getContainer();
 
 // Register component on container
-$container['view'] = function($c) {
+$container['view'] = function ($c) {
     $settings = $c->get('settings')['view'];
     $view = new \Slim\Views\Twig($settings['template_path'], [
         $settings['options']
@@ -27,7 +27,7 @@ $container['logger'] = function ($c) {
 };
 
 // CError
-$container['util_error'] = function($c) {
+$container['util_error'] = function ($c) {
     $settings = $c->get('settings')['db'];
 
     // クラスを初期化
@@ -36,7 +36,7 @@ $container['util_error'] = function($c) {
 };
 
 // CObserveAccess
-$container['util_observe_access'] = function($c) {
+$container['util_observe_access'] = function ($c) {
     $obs = new Am1\Utils\CObserveAccess([
         "ADMIN_EMAIL" => ADMIN_ADDR,    // 管理者メールアドレス
         "FROM_EMAIL" => SYS_ADDR     // 送信元メールアドレス

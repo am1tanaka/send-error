@@ -46,7 +46,7 @@ class CError {
         $obj = json_decode($data);
 
         $datas = [];
-        foreach($obj as $k => $v) {
+        foreach ($obj as $k => $v) {
             $datas[$k] = ["title"=>$k, "data"=>$v];
         }
         return $datas;
@@ -95,5 +95,3 @@ class CError {
     }
 
 }
-
- ?>

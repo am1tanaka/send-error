@@ -27,15 +27,16 @@ class ErrorTable extends Eloquent {
 class DbTest extends \PHPUnit_Extensions_Database_TestCase
 {
     public static $pdo = null;
-    var $pdo_conn = null;
-    var $settings;
-    static $cerror = null;
-    static $cobserve = null;
+    private $pdo_conn = null;
+    private $settings;
+    private static $cerror = null;
+    private static $cobserve = null;
 
     /**
      * TestCaseからデータベースへの接続
      */
-    public function getConnection() {
+    public function getConnection()
+    {
         if ($this->pdo_conn == null) {
             if (self::$pdo == null) {
                 self::$pdo = new PDO('mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset=utf8', TEST_DB_USER, TEST_DB_PASS);
@@ -49,7 +50,8 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * テスト用のデータセットを作成する。テストごとに実行
      */
-    public function getDataSet() {
+    public function getDataSet()
+    {
         // 初期化
         $this->settings = require __DIR__ . '/../../src/settings.php';
 
@@ -74,7 +76,8 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * データ登録
      * 指定の文字列をデータベースに登録する
      */
-    public function testDataEntry() {
+    public function testDataEntry()
+    {
         // テストデータを読み込む
         $data = file_get_contents(__DIR__ . '/entry-test-data.json');
 
@@ -105,7 +108,8 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * データの取得
      * メールにCSVを添付して送信
      */
-    public function testGetKey() {
+    public function testGetKey()
+    {
         // エラーチェック
         $fail = self::$cerror->getDescriptionArrayFromDB("0");
         $this->assertFalse($fail);
@@ -120,7 +124,8 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * @group cerror
      * データの削除
      */
-    public function testDelete() {
+    public function testDelete()
+    {
         $conn = $this->getConnection();
 
         // 最初のデータ個数をチェック
@@ -142,7 +147,8 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * @group cobserve
      * 失敗の報告
      */
-    public function _testEntryInvalidAccess() {
+    public function _testEntryInvalidAccess()
+    {
         // エラー許容
         for ($i=0 ; $i<4 ; $i++) {
             $res = self::$cobserve->entryInvalidAccess(
@@ -174,7 +180,8 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * @group cobserve
      * カラムより大きいデータを送付した時の動作確認
      */
-    public function _testLongData() {
+    public function _testLongData()
+    {
         // 送信
         for ($i=0 ; $i<5 ; $i++) {
             $res = self::$cobserve->entryInvalidAccess(
@@ -193,7 +200,8 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * SQLインジェクションができるかをチェック
      * http://d.hatena.ne.jp/muggles0812/20120701
      */
-    public function _testSecurity() {
+    public function _testSecurity()
+    {
         for ($i=0 ; $i<5 ; $i++) {
             $res = self::$cobserve->entryInvalidAccess(
                 "localhost",
@@ -207,7 +215,8 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * @group cobserve
      * アクセス失敗の解除テスト
      */
-    public function _testReleaseInvalidAccess() {
+    public function _testReleaseInvalidAccess()
+    {
         // エラーの登録
         for ($i=0 ; $i<3 ; $i++) {
             self::$cobserve->entryInvalidAccess(
@@ -234,7 +243,8 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * 不正な解放ミスを繰り返して、ホストが停止するかを確認
      */
-    public function _testReleaseMissReport() {
+    public function _testReleaseMissReport()
+    {
         for($i=0 ; $i<4 ; $i++) {
             $res = self::$cobserve->releaseInvalidAccess("invalid", "remotehost");
             $this->assertEquals(0, $res);
@@ -248,7 +258,8 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * @group cobserve
      * 指定のHOSTがNGリストにあるかを確認
      */
-    public function _testIsNG() {
+    public function _testIsNG()
+    {
         $res = self::$cobserve->isNG("localhost");
         $this->assertEquals(0, $res);
     }
@@ -257,7 +268,8 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * @group cobserve
      * NGリストの登録テスト
      */
-    public function _testNG() {
+    public function _testNG()
+    {
         $res = self::$cobserve->isNG("localhost");
         $this->assertEquals(0, $res, "check before set ng.");
 
@@ -282,7 +294,8 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * @group cobserve
      * NGリストの解除テスト
      */
-    public function _testReleaseNG() {
+    public function _testReleaseNG()
+    {
         // 登録
         self::$cobserve->entryNGList("localhost");
         $res = self::$cobserve->isNG("localhost");
@@ -302,7 +315,8 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * 不正なNGリストの登録リクエストの要求をブロックするテスト
      * メールが送信されればOK
      */
-    public function _testInvalidReleaseNG() {
+    public function _testInvalidReleaseNG()
+    {
         // 不正な要求
         for ($i=0 ; $i<5 ; $i++) {
             self::$cobserve->entryNGList("none", "remote_host");
@@ -312,7 +326,8 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * データの登録テスト
      */
-    public function _testInsert() {
+    public function _testInsert()
+    {
         // 追加
         $err = new ErrorTable;
         $err->keycode = Am1Util::makeRandWords($this->settings['settings']['app']['KEYCODE_LENGTH']);
@@ -331,9 +346,10 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * データの確認テスト
      */
-    public function _testListAll() {
+    public function _testListAll()
+    {
         $errs = ErrorTable::all();
-        foreach($errs as $k => $v) {
+        foreach ($errs as $k => $v) {
             echo "[$k]=$v\n";
         }
 
