@@ -3,6 +3,7 @@ JavaScriptのプログラムでエラーが発生した時に、エラー内容�
 
 # sideci
 - https://www.sideci.com/github_repositories/54460897/issues
+- [株式会社インフィニットループ PSR-1 基本コーディング規約（日本語）](http://www.infiniteloop.co.jp/docs/psr/psr-1-basic-coding-standard.html)
 
 # 動作の流れ
 ## JavaScript側
