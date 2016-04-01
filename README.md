@@ -1,6 +1,9 @@
 # send-error
 JavaScriptのプログラムでエラーが発生した時に、エラー内容を管理者に報告するためのライブラリとサーバープログラム。また、不正なアクセスの停止などのサービスも用意。
 
+# sideci
+- https://www.sideci.com/github_repositories/54460897/issues
+
 # 動作の流れ
 ## JavaScript側
 1. JavaScriptでエラー発生
