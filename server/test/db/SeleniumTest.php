@@ -42,7 +42,7 @@ class WebTest extends PHPUnit_Extensions_Selenium2TestCase {
     }
 
     /** 一時停止の処理*/
-    public function testReleaseInvalidList() {
+    public function _testReleaseInvalidList() {
         // 無効なアクセスを登録
         self::$cobserve->entryInvalidAccess('localhost', 'SeleniumTest', 'errormess');
         self::$cobserve->entryInvalidAccess('localhost', 'SeleniumTest', 'errormess');
@@ -67,6 +67,45 @@ class WebTest extends PHPUnit_Extensions_Selenium2TestCase {
         $this->url(self::DOMAIN.self::OBSERVE_URL."/xxxx/release");
         $this->url(self::DOMAIN.self::OBSERVE_URL."/xxxx/release");
         $this->assertEquals('ok', $this->byId('info')->text());
+    }
+
+    /**
+     * NGリストへの登録呼び出しのテスト
+     */
+    public function testEntryNG() {
+        // 一時停止にまずは登録
+        self::$cobserve->entryInvalidAccess('localhost', 'SeleniumTest', 'testEntryNG');
+        // localhostのキーを取り出す
+        $row = InvalidAccessTable::where('remote_host', 'like', 'localhost')->get()[0];
+        $key = $row->keycode;
+
+        // NGリストを全て削除
+        if (NGIPsTable::all()->count() > 0) {
+            NGIPsTable::all()->delete();            
+        }
+        $this->url(self::DOMAIN.self::OBSERVE_URL."/$key/ng");
+
+        // 登録されていることを確認
+        $this->assertStringStartsWith('指定のホスト', $this->byId('info')->text());
+    }
+
+    /**
+     * 不正なNGリスト登録の呼び出しテスト
+     */
+    public function testInvalidEntryNG() {
+        // 現在のアクセス失敗回数を数える
+        $before = InvalidAccessTable::all()->count();
+
+        $key = "ngkey";
+        $this->url(self::DOMAIN.self::OBSERVE_URL."/$key/ng");
+        $this->url(self::DOMAIN.self::OBSERVE_URL."/$key/ng");
+        $this->url(self::DOMAIN.self::OBSERVE_URL."/$key/ng");
+        $this->url(self::DOMAIN.self::OBSERVE_URL."/$key/ng");
+        $this->url(self::DOMAIN.self::OBSERVE_URL."/$key/ng");
+
+        // 5つふえていることを確認
+        $after = InvalidAccessTable::all()->count();
+        $this->assertEquals($before+5, $after);
     }
 
 }

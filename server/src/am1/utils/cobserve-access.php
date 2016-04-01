@@ -88,7 +88,7 @@ class CObserveAccess {
         $hostapp = InvalidAccessTable::where('remote_host', 'like', $host)->where('app_name', 'like', $appname);
         $cnt = $hostapp->count();
         if ($cnt >= $this->settings['NG_COUNT']) {
-            entryNGList($host);
+            entryNGListWithHost($host);
             return true;
         }
 
@@ -109,23 +109,37 @@ class CObserveAccess {
     }
 
     /**
+     * 指定のキーコードに対応するホストをアクセス失敗テーブルから探して返す。
+     * 見つからない場合はfalse
+     * @param string $key キーコード
+     * @return 成功したらstringのホスト / ない場合はfalse
+     */
+    function getHostWithKeyInvalidHost($key) {
+        $key = substr($key, 0, $this->settings['KEYCODE_LENGTH']);
+        $host = InvalidAccessTable::where("keycode", "like", $key);
+        if ($host->count() == 0) {
+            return false;
+        }
+        return $host->take(1)->get()[0]->remote_host;
+    }
+
+    /**
      * アクセスに成功したときに呼び出す関数。指定のホストのデータを削除する
      * @param string $key 削除するホストのキーコード
      * @param string $remote_host 接続元のホスト。キーがなかった時のエラー処理
      * @return int 削除した件数。0の時は失敗
      */
     public function releaseInvalidAccess($key, $remote_host) {
-        $key = substr($key, 0, $this->settings['KEYCODE_LENGTH']);
-        $host = InvalidAccessTable::where("keycode", "like", $key);
+        $host = $this->getHostWithKeyInvalidHost($key);
 
         // 見つからない場合は不正なアクセスなので、不正なアクセスを登録
-        if ($host->count() == 0) {
+        if ($host === false) {
             $this->entryInvalidAccess($remote_host, self::MY_APP_NAME, "不正なキーでのアクセス失敗の削除要求:$key");
             return 0;
         }
 
         // 指定のホストを削除
-        return InvalidAccessTable::where("remote_host", "like", $host->take(1)->get()[0]->remote_host)->delete();
+        return InvalidAccessTable::where("remote_host", "like", $host)->delete();
     }
 
     /**
@@ -156,10 +170,30 @@ class CObserveAccess {
     }
 
     /**
+     * 指定のキーコードで、InvalidAccessTableに登録されているホストを
+     * NGリストに登録する
+     * @param string $key キーコード
+     * @param string $remote_host 接続元のリモートアドレス
+     * @return string=成功したら、停止したホストアドレスを返す / false=失敗
+     */
+    public function entryNGList($key, $remote_host) {
+        $host = $this->getHostWithKeyInvalidHost($key);
+        if ($host === false) {
+            // 見つからないので不正なアクセス
+            $this->entryInvalidAccess($remote_host, self::MY_APP_NAME, "entryNGList:Invalid KeyCode:$key");
+            return false;
+        }
+
+        // 指定のホストをNGリストにする
+        $this->entryNGListWithHost($host);
+        return $host;
+    }
+
+    /**
      * 指定のホストをNGリストに追加
      * @param string $host NGリストに追加するホスト
      */
-    function entryNGList($host) {
+    function entryNGListWithHost($host) {
         $host = substr($host, 0, self::REMOTE_HOST_LENGTH);
         $ng = NGIPsTable::where('remote_host', 'like', $host);
         // 指定のホストがあるかを確認
@@ -174,6 +208,7 @@ class CObserveAccess {
             $this->reportNG($host, $new->keycode);
         }
         else {
+            // すでにある場合は時間の更新だけ行う
             $ng->get()[0]->touch();
         }
     }

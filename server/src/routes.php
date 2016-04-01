@@ -17,8 +17,30 @@ $app->get('/invalid-access/{key}/release', function($request, $response, $args) 
             'info' => 'ok'
         ]);
     }
+    // 成功
     return $this->view->render($response, 'info.html', [
         'info' => '指定のホストの一時停止を解除しました。'
+    ]);
+});
+
+/** NGリストに登録する*/
+$app->get('/invalid-access/{key}/ng', function($request, $response, $args) {
+    // エラーを初期化
+    $this->util_error;
+
+    // 削除処理
+    $res = $this->util_observe_access->entryNGList($args['key'], $_SERVER['REMOTE_ADDR']);
+
+    // 呼び出されたキーのホストを取り出す
+    if ($res === false) {
+        // 失敗
+        return $this->view->render($response, 'info.html', [
+            'info' => 'ok'
+        ]);
+    }
+    // 成功
+    return $this->view->render($response, 'info.html', [
+        'info' => '指定のホスト['.$res.']をNGリストに登録しました。'
     ]);
 });
 
