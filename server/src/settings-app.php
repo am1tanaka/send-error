@@ -8,5 +8,3 @@ return [
     // キーコードの長さ
     'KEYCODE_LENGTH' => 16
 ];
-
- ?>

@@ -2,7 +2,7 @@
 
 namespace Am1\Utils;
 
-class am1util
+class Am1Util
 {
     /**
      * ランダム文字列を作成する

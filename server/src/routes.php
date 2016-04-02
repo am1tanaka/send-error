@@ -1,12 +1,13 @@
 <?php
-require_once("./src/am1/utils/cerror.php");
-require_once("./src/am1/utils/cobserve-access.php");
+
+require_once './src/am1/utils/cerror.php';
+require_once './src/am1/utils/cobserve-access.php';
 
 // Routes
 
 // 不正アクセスAPI
-/** 一時停止を解除する*/
-$app->get('/invalid-access/{key}/release', function($request, $response, $args) {
+/* 一時停止を解除する*/
+$app->get('/invalid-access/{key}/release', function ($request, $response, $args) {
     // エラーを初期化
     $this->util_error;
 
@@ -14,17 +15,17 @@ $app->get('/invalid-access/{key}/release', function($request, $response, $args) 
     if ($res == 0) {
         // 失敗
         return $this->view->render($response, 'info.html', [
-            'info' => 'ok'
+            'info' => 'ok',
         ]);
     }
     // 成功
     return $this->view->render($response, 'info.html', [
-        'info' => '指定のホストの一時停止を解除しました。'
+        'info' => '指定のホストの一時停止を解除しました。',
     ]);
 });
 
-/** NGリストに登録する*/
-$app->get('/invalid-access/{key}/ng', function($request, $response, $args) {
+/* NGリストに登録する*/
+$app->get('/invalid-access/{key}/ng', function ($request, $response, $args) {
     // エラーを初期化
     $this->util_error;
 
@@ -35,17 +36,17 @@ $app->get('/invalid-access/{key}/ng', function($request, $response, $args) {
     if ($res === false) {
         // 失敗
         return $this->view->render($response, 'info.html', [
-            'info' => 'ok'
+            'info' => 'ok',
         ]);
     }
     // 成功
     return $this->view->render($response, 'info.html', [
-        'info' => '指定のホスト['.$res.']をNGリストに登録しました。'
+        'info' => '指定のホスト['.$res.']をNGリストに登録しました。',
     ]);
 });
 
-/** NGリストから指定のキーを削除*/
-$app->get('/invalid-access/ng/{key}/release', function($request, $response, $args) {
+/* NGリストから指定のキーを削除*/
+$app->get('/invalid-access/ng/{key}/release', function ($request, $response, $args) {
     // エラーを初期化
     $this->util_error;
 
@@ -56,27 +57,27 @@ $app->get('/invalid-access/ng/{key}/release', function($request, $response, $arg
     if ($res === false) {
         // 失敗
         return $this->view->render($response, 'info.html', [
-            'info' => 'ok'
+            'info' => 'ok',
         ]);
     }
     // 成功
     return $this->view->render($response, 'info.html', [
-        'info' => '指定のホスト['.$res.']のNGを解除しました。'
+        'info' => '指定のホスト['.$res.']のNGを解除しました。',
     ]);
 });
 
-/** テスト*/
-$app->get('/test', function($request, $respone, $args) {
+/* テスト*/
+$app->get('/test', function ($request, $respone, $args) {
     $data = '{"clientWidth":1080,"clientHeight":25,"doNotTrack":"unspecified","oscpu":"Intel Mac OS X 10.11","productSub":"20100101","cookieEnabled":true,"buildID":"20160315153207","appCodeName":"Mozilla","appName":"Netscape","appVersion":"5.0 (Macintosh)","platform":"MacIntel","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:45.0) Gecko/20100101 Firefox/45.0","product":"Gecko","language":"ja","onLine":true}';
 
     return $this->view->render($respone, 'view.html', [
-        'datas' => $this->utils_error->convJSON2Array($data)
+        'datas' => $this->utils_error->convJSON2Array($data),
     ]);
 });
 
-/** キーを指定して該当するデータがあれば表示する*/
-$app->get('/{key}', function($request, $response, $args) {
+/* キーを指定して該当するデータがあれば表示する*/
+$app->get('/{key}', function ($request, $response, $args) {
     return $this->view->render($response, 'view.html', [
-        'key' => $args['key']
+        'key' => $args['key'],
     ]);
 })->setName('view');

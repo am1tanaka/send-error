@@ -142,7 +142,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * @group cobserve
      * 失敗の報告
      */
-    public function _testEntryInvalidAccess()
+    public function xtestEntryInvalidAccess()
     {
         // エラー許容
         for ($i = 0; $i < 4; ++$i) {
@@ -175,7 +175,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * @group cobserve
      * カラムより大きいデータを送付した時の動作確認
      */
-    public function _testLongData()
+    public function xtestLongData()
     {
         // 送信
         for ($i = 0; $i < 5; ++$i) {
@@ -195,7 +195,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * SQLインジェクションができるかをチェック
      * http://d.hatena.ne.jp/muggles0812/20120701.
      */
-    public function _testSecurity()
+    public function xtestSecurity()
     {
         for ($i = 0; $i < 5; ++$i) {
             $res = self::$cobserve->entryInvalidAccess(
@@ -210,7 +210,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * @group cobserve
      * アクセス失敗の解除テスト
      */
-    public function _testReleaseInvalidAccess()
+    public function xtestReleaseInvalidAccess()
     {
         // エラーの登録
         for ($i = 0; $i < 3; ++$i) {
@@ -238,7 +238,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * 不正な解放ミスを繰り返して、ホストが停止するかを確認.
      */
-    public function _testReleaseMissReport()
+    public function xtestReleaseMissReport()
     {
         for ($i = 0; $i < 4; ++$i) {
             $res = self::$cobserve->releaseInvalidAccess('invalid', 'remotehost');
@@ -253,7 +253,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * @group cobserve
      * 指定のHOSTがNGリストにあるかを確認
      */
-    public function _testIsNG()
+    public function xtestIsNG()
     {
         $res = self::$cobserve->isNG('localhost');
         $this->assertEquals(0, $res);
@@ -263,7 +263,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * @group cobserve
      * NGリストの登録テスト
      */
-    public function _testNG()
+    public function xtestNG()
     {
         $res = self::$cobserve->isNG('localhost');
         $this->assertEquals(0, $res, 'check before set ng.');
@@ -289,7 +289,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * @group cobserve
      * NGリストの解除テスト
      */
-    public function _testReleaseNG()
+    public function xtestReleaseNG()
     {
         // 登録
         self::$cobserve->entryNGList('localhost');
@@ -310,7 +310,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      * 不正なNGリストの登録リクエストの要求をブロックするテスト
      * メールが送信されればOK
      */
-    public function _testInvalidReleaseNG()
+    public function xtestInvalidReleaseNG()
     {
         // 不正な要求
         for ($i = 0; $i < 5; ++$i) {
@@ -321,7 +321,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * データの登録テスト.
      */
-    public function _testInsert()
+    public function xtestInsert()
     {
         // 追加
         $err = new ErrorTable();
@@ -341,7 +341,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * データの確認テスト.
      */
-    public function _testListAll()
+    public function xtestListAll()
     {
         $errs = ErrorTable::all();
         foreach ($errs as $k => $v) {

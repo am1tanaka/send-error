@@ -1,5 +1,7 @@
 <?php
 
+namespace SeleniumTest;
+
 // TODO: CError/CObserveAccessを組み込み
 require_once __DIR__.'/../../src/am1/utils/am1util.php';
 require_once __DIR__.'/../../src/am1/utils/cerror.php';
@@ -12,7 +14,7 @@ use Am1\Utils\InvalidAccessTable;
 use Am1\Utils\NGIPsTable;
 
 /** Seleniumの継承*/
-class WebTest extends PHPUnit_Extensions_Selenium2TestCase
+class WebTest extends \PHPUnit_Extensions_Selenium2TestCase
 {
     const DOMAIN = 'http://0.0.0.0:8080';
     const OBSERVE_URL = '/invalid-access';

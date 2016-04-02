@@ -52,7 +52,7 @@ class CError
      * JSON文字列をエラーデータベースに登録する。
      * キーを指定した場合はそのキーで。キーを指定していない場合は自動生成する
      */
-    public function entryErrorData($json, $key="")
+    public function entryErrorData($json, $key = "")
     {
         // キーを作成
         if (strlen($key) !== self::KEY_LENGTH) {
@@ -70,7 +70,8 @@ class CError
      * 指定したキーコードの文字列を返す。
      * 見つからない場合はから文字を返す
      * @param string $key 取り出したいキーコード
-     * @return 成功したら取り出したデータを連想配列に変換して返す。失敗したらfalseを返す
+     * @return 成功したら取り出したデータを連想配列に変換して返す。
+     * 失敗したらfalseを返す
      */
     public function getDescriptionArrayFromDB($key)
     {
