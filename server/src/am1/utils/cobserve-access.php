@@ -18,9 +18,10 @@ class CObserveAccess
 {
     /* 監視用のデフォルト設定*/
     public $settings = [
-        'PAUSE_SEC' => 600,    // 一時停止を判定するのに有効なデータの経過秒数
+        'PAUSE_SEC' => 600,     // 一時停止を判定するのに有効なデータの経過秒数
         'PAUSE_COUNT' => 5,     // 一時停止を判定する回数
-        'NG_COUNT' => 10,       // 一度も成功しないでこの回数失敗し続けた場合、NGリストに追加する
+        'NG_COUNT' => 10,       // 一度も成功しないでこの回数失敗し続けた場合、
+                                // NGリストに追加する
         'KEYCODE_LENGTH' => 16, // キーコードの文字数
         'ADMIN_EMAIL' => '',    // 管理者メールアドレス
         'FROM_EMAIL' => '',     // 送信元メールアドレス
@@ -134,7 +135,11 @@ class CObserveAccess
 
         // 見つからない場合は不正なアクセスなので、不正なアクセスを登録
         if ($host === false) {
-            $this->entryInvalidAccess($remote_host, self::MY_APP_NAME, "不正なキーでのアクセス失敗の削除要求:$key");
+            $this->entryInvalidAccess(
+                $remote_host,
+                self::MY_APP_NAME,
+                "不正なキーでのアクセス失敗の削除要求:$key"
+            );
 
             return 0;
         }
@@ -185,7 +190,11 @@ class CObserveAccess
         $host = $this->getHostWithKeyInvalidHost($key);
         if ($host === false) {
             // 見つからないので不正なアクセス
-            $this->entryInvalidAccess($remote_host, self::MY_APP_NAME, "entryNGList:Invalid KeyCode:$key");
+            $this->entryInvalidAccess(
+                $remote_host,
+                self::MY_APP_NAME,
+                "entryNGList:Invalid KeyCode:$key"
+            );
 
             return false;
         }
@@ -228,7 +237,8 @@ class CObserveAccess
     {
         $host = substr($host, 0, self::REMOTE_HOST_LENGTH);
         $subject = '[AM1-SYS]NGホストの追加レポート';
-        $mes = "以下のホストの操作ミスが規定数を超えたので、NGリストに追加しました。\n";
+        $mes = "以下のホストの操作ミスが規定数を超えたので、";
+        $mes .= "NGリストに追加しました。\n";
         $mes .= "\n";
         $mes .= 'HOST  : '.$host."\n";
         $mes .= 'DOMAIN: '.@gethostbyaddr($host)."\n";

@@ -2,14 +2,13 @@
 /**
  * DBのテスト.
  */
-//namespace Am1\SendError\Tests;
+namespace DbTest;
 
 require_once __DIR__.'/../../src/am1/utils/am1util.php';
 require_once __DIR__.'/../../src/am1/utils/cerror.php';
 require_once __DIR__.'/../../src/am1/utils/cobserve-access.php';
 require_once __DIR__.'/../../src/am1/utils/ErrorTable.php';
 
-use Illuminate\Database\Eloquent\Model as Eloquent;
 use Am1\Utils\Am1Util;
 use Am1\Utils\CError;
 use Am1\Utils\CObserveAccess;
@@ -31,8 +30,11 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     {
         if ($this->pdo_conn == null) {
             if (self::$pdo == null) {
-                self::$pdo = new PDO(
-                'mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset=utf8', TEST_DB_USER, TEST_DB_PASS);
+                self::$pdo = new \PDO(
+                'mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset=utf8',
+                TEST_DB_USER,
+                TEST_DB_PASS
+            );
             }
 
             $this->pdo_conn = $this->createDefaultDBConnection(self::$pdo);
@@ -61,8 +63,8 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
             );
         }
 
-        return new PHPUnit_Extensions_Database_DataSet_YamlDataSet(
-        __DIR__.'/init-error-data.yml'
+        return new \PHPUnit_Extensions_Database_DataSet_YamlDataSet(
+            __DIR__.'/init-error-data.yml'
         );
     }
 
@@ -85,17 +87,6 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
         // 成功チェック
         $succ = self::$cerror->getDescriptionArrayFromDB('0123456789112345');
         $this->assertEquals(1080, $succ['clientWidth']);
-
-        /*
-        // データを読み出す
-        $queryTable = $this->getConnection()->createQueryTable('error_data', 'select keycode,description from error_data');
-        // データセットを返す
-        $yaml = new PHPUnit_Extensions_Database_DataSet_YamlDataSet(
-            __DIR__ . '/expect-error-data.yml');
-        $expected = $yaml->getTable("error_data");
-        // チェック
-        $this->assertTablesEqual($expected, $queryTable);
-        */
     }
 
     /**
