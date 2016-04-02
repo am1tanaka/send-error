@@ -11,20 +11,6 @@ require_once __DIR__.'/am1util.php';
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
-/** 不正アクセステーブル*/
-class InvalidAccessTable extends Eloquent
-{
-    protected $table = 'invalid_access';
-    protected $guarded = array('id');
-}
-
-/** NGテーブル*/
-class NGIPsTable extends Eloquent
-{
-    protected $table = 'ng_ips';
-    protected $guarded = array('id');
-}
-
 /**
  * アクセス監視用のクラス.
  */
