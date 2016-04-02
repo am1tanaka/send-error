@@ -1,6 +1,6 @@
 <?php
 
-namespace am1\utils;
+namespace Am1\Utils;
 
 class am1util
 {

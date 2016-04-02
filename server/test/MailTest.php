@@ -17,8 +17,7 @@ class MailTest extends \PHPUnit_Framework_TestCase
             "件名",
             "送信テスト",
             "From :".mb_encode_mimeheader("テスト送信元")."<".TEST_FROM_ADDR.">"
-        ) )
-        {
+        )) {
             $this->assertEquals(0, 0);
         } else {
             $this->assertEquals(0, 1);

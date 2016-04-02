@@ -9,14 +9,6 @@ namespace Am1\Utils;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
-// id
-// keycode varchar(16)
-// description text
-class ErrorTable extends Eloquent
-{
-    protected $table = 'error_data';
-}
-
 /**
  * エラー処理クラス
  */

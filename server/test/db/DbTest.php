@@ -7,6 +7,7 @@
 require_once __DIR__.'/../../src/am1/utils/am1util.php';
 require_once __DIR__.'/../../src/am1/utils/cerror.php';
 require_once __DIR__.'/../../src/am1/utils/cobserve-access.php';
+require_once __DIR__.'/../../src/am1/utils/ErrorTable.php';
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Am1\Utils\Am1Util;
@@ -14,15 +15,6 @@ use Am1\Utils\CError;
 use Am1\Utils\CObserveAccess;
 use Am1\Utils\InvalidAccessTable;
 use Am1\Utils\NGIPsTable;
-
-// id
-// keycode varchar(16)
-// description text
-
-class ErrorTable extends Eloquent
-{
-    protected $table = 'error_data';
-}
 
 class DbTest extends \PHPUnit_Extensions_Database_TestCase
 {
