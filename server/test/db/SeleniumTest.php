@@ -43,7 +43,7 @@ class WebTest extends PHPUnit_Extensions_Selenium2TestCase
     }
 
     /** 一時停止の処理*/
-    public function _testReleaseInvalidList() {
+    public function xtestReleaseInvalidList() {
         // 無効なアクセスを登録
         self::$cobserve->entryInvalidAccess('localhost', 'SeleniumTest', 'errormess');
         self::$cobserve->entryInvalidAccess('localhost', 'SeleniumTest', 'errormess');
@@ -60,7 +60,7 @@ class WebTest extends PHPUnit_Extensions_Selenium2TestCase
     }
 
     /** 一時停止の無効な解放による一時停止*/
-    public function _testInvalidReleaseInvalidList() {
+    public function xtestInvalidReleaseInvalidList() {
         // 失敗
         $this->url(self::DOMAIN.self::OBSERVE_URL."/xxxx/release");
         $this->url(self::DOMAIN.self::OBSERVE_URL."/xxxx/release");
@@ -74,7 +74,7 @@ class WebTest extends PHPUnit_Extensions_Selenium2TestCase
      * @group cobserve
      * NGリストへの登録呼び出しのテスト
      */
-    public function _testEntryNG() {
+    public function xtestEntryNG() {
         // 一時停止にまずは登録
         self::$cobserve->entryInvalidAccess('localhost', 'SeleniumTest', 'testEntryNG');
         // localhostのキーを取り出す
@@ -95,7 +95,7 @@ class WebTest extends PHPUnit_Extensions_Selenium2TestCase
      * @group cobserve
      * 不正なNGリスト登録の呼び出しテスト
      */
-    public function _testInvalidEntryNG() {
+    public function xtestInvalidEntryNG() {
         // 現在のアクセス失敗回数を数える
         $before = InvalidAccessTable::all()->count();
 
@@ -115,7 +115,7 @@ class WebTest extends PHPUnit_Extensions_Selenium2TestCase
      * @group cobserve
      * NGを解除するテスト
      */
-    public function testReleaseNG() {
+    public function xtestReleaseNG() {
         $key = "";
 
         // NGがあるか
@@ -138,7 +138,7 @@ class WebTest extends PHPUnit_Extensions_Selenium2TestCase
      * @group cobserve
      * 無効なキーでNGを繰り返して一時停止させるテスト
      */
-    public function testInvalidReleaseNG() {
+    public function xtestInvalidReleaseNG() {
         // 現在のアクセス失敗回数を数える
         $before = InvalidAccessTable::all()->count();
 
