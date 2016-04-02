@@ -2,7 +2,6 @@
 
 namespace SeleniumTest;
 
-use Am1\Utils\Am1Util;
 use Am1\Utils\CError;
 use Am1\Utils\CObserveAccess;
 use Am1\Utils\InvalidAccessTable;
@@ -31,8 +30,8 @@ class WebTest extends \PHPUnit_Extensions_Selenium2TestCase
         }
         if (self::$cobserve == null) {
             self::$cobserve = new CObserveAccess(
-                ['ADMIN_EMAIL' => ADMIN_ADDR,
-                    'FROM_EMAIL' => SYS_ADDR,
+                ['ADMIN_EMAIL' => ADMIN_EMAIL,
+                    'FROM_EMAIL' => SYS_EMAIL,
                 ]
             );
         }
@@ -115,7 +114,7 @@ class WebTest extends \PHPUnit_Extensions_Selenium2TestCase
      * @group cobserve
      * NGを解除するテスト
      */
-    public function xtestReleaseNG()
+    public function testReleaseNG()
     {
         $key = '';
 

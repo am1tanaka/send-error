@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../src/config/config-common.php';
+
 if (PHP_SAPI == 'cli-server') {
     // To help the built-in PHP dev server, check if the request was actually for
     // something which should probably be served as a static file
@@ -15,9 +17,15 @@ if (PHP_SAPI == 'cli-server') {
     $settings = require __DIR__.'/../src/settings-rel.php';
 }
 
-require __DIR__.'/../vendor/autoload.php';
-
 session_start();
+
+require __DIR__.'/../vendor/autoload.php';
+require_once __DIR__ . '/../src/am1/utils/am1util.php';
+require_once __DIR__ . '/../src/am1/utils/cerror.php';
+require_once __DIR__ . '/../src/am1/utils/cobserve-access.php';
+require_once __DIR__ . '/../src/am1/utils/ErrorTable.php';
+require_once __DIR__ . '/../src/am1/utils/InvalidAccessTable.php';
+require_once __DIR__ . '/../src/am1/utils/NGIPsTable.php';
 
 // Instantiate the app
 $app = new \Slim\App($settings);

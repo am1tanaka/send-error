@@ -38,8 +38,8 @@ $container['util_error'] = function ($c) {
 // CObserveAccess
 $container['util_observe_access'] = function ($c) {
     $obs = new Am1\Utils\CObserveAccess([
-        "ADMIN_EMAIL" => ADMIN_ADDR,    // 管理者メールアドレス
-        "FROM_EMAIL" => SYS_ADDR     // 送信元メールアドレス
+        "ADMIN_EMAIL" => ADMIN_EMAIL,    // 管理者メールアドレス
+        "FROM_EMAIL" => SYS_EMAIL     // 送信元メールアドレス
     ]);
     return $obs;
 };

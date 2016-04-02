@@ -52,8 +52,9 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
         }
         if (self::$cobserve == null) {
             self::$cobserve = new CObserveAccess(
-                ['ADMIN_EMAIL' => TEST_TO_ADDR,
-                    'FROM_EMAIL' => TEST_FROM_ADDR,
+                [
+                    'ADMIN_EMAIL' => ADMIN_EMAIL,
+                    'FROM_EMAIL' => SYS_EMAIL,
                 ]
             );
         }
