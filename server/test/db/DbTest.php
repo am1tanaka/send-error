@@ -4,11 +4,6 @@
  */
 namespace DbTest;
 
-require_once __DIR__.'/../../src/am1/utils/am1util.php';
-require_once __DIR__.'/../../src/am1/utils/cerror.php';
-require_once __DIR__.'/../../src/am1/utils/cobserve-access.php';
-require_once __DIR__.'/../../src/am1/utils/ErrorTable.php';
-
 use Am1\Utils\Am1Util;
 use Am1\Utils\CError;
 use Am1\Utils\CObserveAccess;

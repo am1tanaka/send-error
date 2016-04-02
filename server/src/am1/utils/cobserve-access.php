@@ -7,8 +7,6 @@
  */
 namespace Am1\Utils;
 
-require_once __DIR__.'/am1util.php';
-
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
