@@ -12,7 +12,7 @@ $app->post('/error', function ($request, $response, $args) {
     $this->util_error;
 
     // パラメーター不足
-    if ( !array_key_exists('description', $_POST)
+    if (!array_key_exists('description', $_POST)
         ||  !array_key_exists('hash', $_POST)) {
         // パラメーター不足
         $this->util_observe_access->entryInvalidAccess(
