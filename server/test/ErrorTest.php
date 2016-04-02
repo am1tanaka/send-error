@@ -1,8 +1,7 @@
 <?php
 /**
- * エラー for PHP クラスのテスト
+ * エラー for PHP クラスのテスト.
  */
-
 namespace ErrorTest;
 
 //require_once("./server/test/testConfig.php");
@@ -14,7 +13,7 @@ class ErrorTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * 登録された
-     * JSON文字列を表示するテスト
+     * JSON文字列を表示するテスト.
      */
     public function testViewResult()
     {
@@ -36,6 +35,5 @@ class ErrorTest extends \PHPUnit_Framework_TestCase
         $str = print_r($obj, true);
         echo "data=".$str;
         */
-
     }
 }

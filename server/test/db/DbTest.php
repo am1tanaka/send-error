@@ -1,14 +1,13 @@
 <?php
 /**
- * DBのテスト
+ * DBのテスト.
  */
 //namespace Am1\SendError\Tests;
 
-require_once(__DIR__."/../../src/am1/utils/am1util.php");
-require_once(__DIR__."/../../src/am1/utils/cerror.php");
-require_once(__DIR__."/../../src/am1/utils/cobserve-access.php");
+require_once __DIR__.'/../../src/am1/utils/am1util.php';
+require_once __DIR__.'/../../src/am1/utils/cerror.php';
+require_once __DIR__.'/../../src/am1/utils/cobserve-access.php';
 
-use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Am1\Utils\Am1Util;
 use Am1\Utils\CError;
@@ -34,7 +33,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     private static $cobserve = null;
 
     /**
-     * TestCaseからデータベースへの接続
+     * TestCaseからデータベースへの接続.
      */
     public function getConnection()
     {
@@ -46,16 +45,17 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 
             $this->pdo_conn = $this->createDefaultDBConnection(self::$pdo);
         }
+
         return $this->pdo_conn;
     }
 
     /**
-     * テスト用のデータセットを作成する。テストごとに実行
+     * テスト用のデータセットを作成する。テストごとに実行.
      */
     public function getDataSet()
     {
         // 初期化
-        $this->settings = require __DIR__ . '/../../src/settings.php';
+        $this->settings = require __DIR__.'/../../src/settings.php';
 
         // クラスを初期化
         if (self::$cerror == null) {
@@ -63,14 +63,14 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
         }
         if (self::$cobserve == null) {
             self::$cobserve = new CObserveAccess(
-                [   "ADMIN_EMAIL"=> TEST_TO_ADDR,
-                    "FROM_EMAIL"=> TEST_FROM_ADDR
+                ['ADMIN_EMAIL' => TEST_TO_ADDR,
+                    'FROM_EMAIL' => TEST_FROM_ADDR,
                 ]
             );
         }
 
         return new PHPUnit_Extensions_Database_DataSet_YamlDataSet(
-        __DIR__ . '/init-error-data.yml'
+        __DIR__.'/init-error-data.yml'
         );
     }
 
@@ -82,7 +82,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     public function testDataEntry()
     {
         // テストデータを読み込む
-        $data = file_get_contents(__DIR__ . '/entry-test-data.json');
+        $data = file_get_contents(__DIR__.'/entry-test-data.json');
 
         // データ登録
         self::$cerror->entryErrorData($data, '0123456789112345');
@@ -91,7 +91,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
         $this->assertEquals(2, $this->getConnection()->getRowCount('error_data'));
 
         // 成功チェック
-        $succ = self::$cerror->getDescriptionArrayFromDB("0123456789112345");
+        $succ = self::$cerror->getDescriptionArrayFromDB('0123456789112345');
         $this->assertEquals(1080, $succ['clientWidth']);
 
         /*
@@ -114,11 +114,11 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     public function testGetKey()
     {
         // エラーチェック
-        $fail = self::$cerror->getDescriptionArrayFromDB("0");
+        $fail = self::$cerror->getDescriptionArrayFromDB('0');
         $this->assertFalse($fail);
 
         // 成功チェック
-        $succ = self::$cerror->getDescriptionArrayFromDB("0123456789abcdef");
+        $succ = self::$cerror->getDescriptionArrayFromDB('0123456789abcdef');
         $this->assertNotFalse($succ);
         $this->assertEquals(1080, $succ['clientWidth']);
     }
@@ -132,18 +132,18 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
         $conn = $this->getConnection();
 
         // 最初のデータ個数をチェック
-        $this->assertEquals(1, $conn->getRowCount("error_data"));
+        $this->assertEquals(1, $conn->getRowCount('error_data'));
 
         // エラーチェック
-        $fail = self::$cerror->deleteDataFromDB("0");
+        $fail = self::$cerror->deleteDataFromDB('0');
         $this->assertEquals(0, $fail);
 
         // データを削除
-        $succ = self::$cerror->deleteDataFromDB("0123456789abcdef");
+        $succ = self::$cerror->deleteDataFromDB('0123456789abcdef');
         $this->assertEquals(1, $succ);
 
         // 残り個数をチェック
-        $this->assertEquals(0, $conn->getRowCount("error_data"));
+        $this->assertEquals(0, $conn->getRowCount('error_data'));
     }
 
     /**
@@ -153,30 +153,30 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     public function _testEntryInvalidAccess()
     {
         // エラー許容
-        for ($i=0; $i<4; $i++) {
+        for ($i = 0; $i < 4; ++$i) {
             $res = self::$cobserve->entryInvalidAccess(
-                "localhost",
-                "DbTest",
-                "error"
+                'localhost',
+                'DbTest',
+                'error'
             );
-            $this->assertTrue($res, "loop:".$i);
+            $this->assertTrue($res, 'loop:'.$i);
         }
 
         // 一時停止&報告
         $res = self::$cobserve->entryInvalidAccess(
-            "localhost",
-            "DbTest",
-            "error"
+            'localhost',
+            'DbTest',
+            'error'
         );
-        $this->assertFalse($res, "pause and sendmail");
+        $this->assertFalse($res, 'pause and sendmail');
 
         // 一時停止&報告なし
         $res = self::$cobserve->entryInvalidAccess(
-            "localhost",
-            "DbTest",
-            "error"
+            'localhost',
+            'DbTest',
+            'error'
         );
-        $this->assertFalse($res, "pause only");
+        $this->assertFalse($res, 'pause only');
     }
 
     /**
@@ -186,30 +186,30 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     public function _testLongData()
     {
         // 送信
-        for ($i=0; $i<5; $i++) {
+        for ($i = 0; $i < 5; ++$i) {
             $res = self::$cobserve->entryInvalidAccess(
-                "0123456789112345678921234567893123456789412345678951234567896123456789",
-                "0123456789112345678921234567893123456789412345678951234567896123456789",
-                "0123456789112345678921234567893123456789412345678951234567896123456789"
-                ."0123456789112345678921234567893123456789412345678951234567896123456789"
-                ."0123456789112345678921234567893123456789412345678951234567896123456789"
-                ."0123456789112345678921234567893123456789412345678951234567896123456789"
-                ."0123456789112345678921234567893123456789412345678951234567896123456789"
+                '0123456789112345678921234567893123456789412345678951234567896123456789',
+                '0123456789112345678921234567893123456789412345678951234567896123456789',
+                '0123456789112345678921234567893123456789412345678951234567896123456789'
+                .'0123456789112345678921234567893123456789412345678951234567896123456789'
+                .'0123456789112345678921234567893123456789412345678951234567896123456789'
+                .'0123456789112345678921234567893123456789412345678951234567896123456789'
+                .'0123456789112345678921234567893123456789412345678951234567896123456789'
             );
         }
     }
 
     /**
      * SQLインジェクションができるかをチェック
-     * http://d.hatena.ne.jp/muggles0812/20120701
+     * http://d.hatena.ne.jp/muggles0812/20120701.
      */
     public function _testSecurity()
     {
-        for ($i=0; $i<5; $i++) {
+        for ($i = 0; $i < 5; ++$i) {
             $res = self::$cobserve->entryInvalidAccess(
-                "localhost",
+                'localhost',
                 '"',
-                " order by 1"
+                ' order by 1'
             );
         }
     }
@@ -221,40 +221,40 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     public function _testReleaseInvalidAccess()
     {
         // エラーの登録
-        for ($i=0; $i<3; $i++) {
+        for ($i = 0; $i < 3; ++$i) {
             self::$cobserve->entryInvalidAccess(
-                "localhost",
-                "DbTest",
-                "error"
+                'localhost',
+                'DbTest',
+                'error'
             );
         }
 
         // キーを取り出す
-        $row = InvalidAccessTable::where("remote_host", "like", "localhost");
-        $this->assertEquals(3, $row->count(), "get key.");
+        $row = InvalidAccessTable::where('remote_host', 'like', 'localhost');
+        $this->assertEquals(3, $row->count(), 'get key.');
 
         // 成功
         $keycode = $row->take(1)->get();
-        $res = self::$cobserve->releaseInvalidAccess($keycode[0]->keycode, "remotehost");
-        $this->assertEquals(3, $res, "delete response.");
+        $res = self::$cobserve->releaseInvalidAccess($keycode[0]->keycode, 'remotehost');
+        $this->assertEquals(3, $res, 'delete response.');
 
         // DBの中身をチェック
         $end = InvalidAccessTable::all()->count();
-        $this->assertEquals(0, $end, "delete complete check.");
+        $this->assertEquals(0, $end, 'delete complete check.');
     }
 
     /**
-     * 不正な解放ミスを繰り返して、ホストが停止するかを確認
+     * 不正な解放ミスを繰り返して、ホストが停止するかを確認.
      */
     public function _testReleaseMissReport()
     {
-        for($i=0; $i<4; $i++) {
-            $res = self::$cobserve->releaseInvalidAccess("invalid", "remotehost");
+        for ($i = 0; $i < 4; ++$i) {
+            $res = self::$cobserve->releaseInvalidAccess('invalid', 'remotehost');
             $this->assertEquals(0, $res);
         }
 
         // エラー報告
-        self::$cobserve->releaseInvalidAccess("invalid", "remotehost");
+        self::$cobserve->releaseInvalidAccess('invalid', 'remotehost');
     }
 
     /**
@@ -263,7 +263,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function _testIsNG()
     {
-        $res = self::$cobserve->isNG("localhost");
+        $res = self::$cobserve->isNG('localhost');
         $this->assertEquals(0, $res);
     }
 
@@ -273,24 +273,24 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function _testNG()
     {
-        $res = self::$cobserve->isNG("localhost");
-        $this->assertEquals(0, $res, "check before set ng.");
+        $res = self::$cobserve->isNG('localhost');
+        $this->assertEquals(0, $res, 'check before set ng.');
 
-        self::$cobserve->entryNGList("localhost");
-        $res = self::$cobserve->isNG("localhost");
-        $this->assertEquals(1, $res, "check after set ng.");
+        self::$cobserve->entryNGList('localhost');
+        $res = self::$cobserve->isNG('localhost');
+        $this->assertEquals(1, $res, 'check after set ng.');
         $update = NGIPsTable::where('remote_host', 'like', 'localhost')->get();
 
         sleep(1);
 
-        self::$cobserve->entryNGList("localhost");
-        $res = self::$cobserve->isNG("localhost");
-        $this->assertEquals(1, $res, "check double set ng.");
+        self::$cobserve->entryNGList('localhost');
+        $res = self::$cobserve->isNG('localhost');
+        $this->assertEquals(1, $res, 'check double set ng.');
         $update2 = NGIPsTable::where('remote_host', 'like', 'localhost')->get();
-        $this->assertNotEquals($update[0]->updated_at, $update2[0]->updated_at, "check update.");
+        $this->assertNotEquals($update[0]->updated_at, $update2[0]->updated_at, 'check update.');
 
-        $res = self::$cobserve->isNG("another");
-        $this->assertEquals(0, $res, "check another host ng.");
+        $res = self::$cobserve->isNG('another');
+        $this->assertEquals(0, $res, 'check another host ng.');
     }
 
     /**
@@ -300,17 +300,17 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     public function _testReleaseNG()
     {
         // 登録
-        self::$cobserve->entryNGList("localhost");
-        $res = self::$cobserve->isNG("localhost");
-        $this->assertEquals(1, $res, "check entry ng success.");
+        self::$cobserve->entryNGList('localhost');
+        $res = self::$cobserve->isNG('localhost');
+        $this->assertEquals(1, $res, 'check entry ng success.');
 
         // キーコードを取得
         $key = NGIPsTable::where('remote_host', 'like', 'localhost')->get()[0];
 
         // 削除
-        self::$cobserve->releaseNGList($key->keycode, "remote_host");
-        $res = self::$cobserve->isNG("localhost");
-        $this->assertEquals(0, $res, "check release ng list.");
+        self::$cobserve->releaseNGList($key->keycode, 'remote_host');
+        $res = self::$cobserve->isNG('localhost');
+        $this->assertEquals(0, $res, 'check release ng list.');
     }
 
     /**
@@ -321,25 +321,25 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     public function _testInvalidReleaseNG()
     {
         // 不正な要求
-        for ($i=0; $i<5; $i++) {
-            self::$cobserve->entryNGList("none", "remote_host");
+        for ($i = 0; $i < 5; ++$i) {
+            self::$cobserve->entryNGList('none', 'remote_host');
         }
     }
 
     /**
-     * データの登録テスト
+     * データの登録テスト.
      */
     public function _testInsert()
     {
         // 追加
-        $err = new ErrorTable;
+        $err = new ErrorTable();
         $err->keycode = Am1Util::makeRandWords($this->settings['settings']['app']['KEYCODE_LENGTH']);
-        $err->description = "YuTanaka";
+        $err->description = 'YuTanaka';
         $err->save();
 
         // 予想
         $expected = new PHPUnit_Extensions_Database_DataSet_YamlDataSet(
-            __DIR__ . '/init-error-data.yml'
+            __DIR__.'/init-error-data.yml'
         );
 
         // チェック
@@ -347,7 +347,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * データの確認テスト
+     * データの確認テスト.
      */
     public function _testListAll()
     {
@@ -356,6 +356,6 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
             echo "[$k]=$v\n";
         }
 
-        $this->assertEquals(1, $this->getConnection()->getRowCount("error_data"), "entry data test");
+        $this->assertEquals(1, $this->getConnection()->getRowCount('error_data'), 'entry data test');
     }
 }

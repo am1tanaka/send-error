@@ -1,12 +1,10 @@
 <?php
 
 // TODO: CError/CObserveAccessを組み込み
-require_once(__DIR__."/../../src/am1/utils/am1util.php");
-require_once(__DIR__."/../../src/am1/utils/cerror.php");
-require_once(__DIR__."/../../src/am1/utils/cobserve-access.php");
+require_once __DIR__.'/../../src/am1/utils/am1util.php';
+require_once __DIR__.'/../../src/am1/utils/cerror.php';
+require_once __DIR__.'/../../src/am1/utils/cobserve-access.php';
 
-use Illuminate\Database\Capsule\Manager as Capsule;
-use Illuminate\Database\Eloquent\Model as Eloquent;
 use Am1\Utils\Am1Util;
 use Am1\Utils\CError;
 use Am1\Utils\CObserveAccess;
@@ -16,18 +14,19 @@ use Am1\Utils\NGIPsTable;
 /** Seleniumの継承*/
 class WebTest extends PHPUnit_Extensions_Selenium2TestCase
 {
-    const DOMAIN = "http://0.0.0.0:8080";
-    const OBSERVE_URL = "/invalid-access";
+    const DOMAIN = 'http://0.0.0.0:8080';
+    const OBSERVE_URL = '/invalid-access';
     private static $cerror = null;
     private static $cobserve = null;
-    private  $settings = "";
+    private $settings = '';
 
-    protected function setUp() {
+    protected function setUp()
+    {
         $this->setBrowser('firefox');
         $this->setBrowserUrl(self::DOMAIN);
 
         // 初期化
-        $this->settings = require __DIR__ . '/../../src/settings.php';
+        $this->settings = require __DIR__.'/../../src/settings.php';
 
         // クラスを初期化
         if (self::$cerror == null) {
@@ -35,15 +34,16 @@ class WebTest extends PHPUnit_Extensions_Selenium2TestCase
         }
         if (self::$cobserve == null) {
             self::$cobserve = new CObserveAccess(
-                [   "ADMIN_EMAIL"=> ADMIN_ADDR,
-                    "FROM_EMAIL"=> SYS_ADDR
+                ['ADMIN_EMAIL' => ADMIN_ADDR,
+                    'FROM_EMAIL' => SYS_ADDR,
                 ]
             );
         }
     }
 
     /** 一時停止の処理*/
-    public function xtestReleaseInvalidList() {
+    public function xtestReleaseInvalidList()
+    {
         // 無効なアクセスを登録
         self::$cobserve->entryInvalidAccess('localhost', 'SeleniumTest', 'errormess');
         self::$cobserve->entryInvalidAccess('localhost', 'SeleniumTest', 'errormess');
@@ -60,13 +60,14 @@ class WebTest extends PHPUnit_Extensions_Selenium2TestCase
     }
 
     /** 一時停止の無効な解放による一時停止*/
-    public function xtestInvalidReleaseInvalidList() {
+    public function xtestInvalidReleaseInvalidList()
+    {
         // 失敗
-        $this->url(self::DOMAIN.self::OBSERVE_URL."/xxxx/release");
-        $this->url(self::DOMAIN.self::OBSERVE_URL."/xxxx/release");
-        $this->url(self::DOMAIN.self::OBSERVE_URL."/xxxx/release");
-        $this->url(self::DOMAIN.self::OBSERVE_URL."/xxxx/release");
-        $this->url(self::DOMAIN.self::OBSERVE_URL."/xxxx/release");
+        $this->url(self::DOMAIN.self::OBSERVE_URL.'/xxxx/release');
+        $this->url(self::DOMAIN.self::OBSERVE_URL.'/xxxx/release');
+        $this->url(self::DOMAIN.self::OBSERVE_URL.'/xxxx/release');
+        $this->url(self::DOMAIN.self::OBSERVE_URL.'/xxxx/release');
+        $this->url(self::DOMAIN.self::OBSERVE_URL.'/xxxx/release');
         $this->assertEquals('ok', $this->byId('info')->text());
     }
 
@@ -74,7 +75,8 @@ class WebTest extends PHPUnit_Extensions_Selenium2TestCase
      * @group cobserve
      * NGリストへの登録呼び出しのテスト
      */
-    public function xtestEntryNG() {
+    public function xtestEntryNG()
+    {
         // 一時停止にまずは登録
         self::$cobserve->entryInvalidAccess('localhost', 'SeleniumTest', 'testEntryNG');
         // localhostのキーを取り出す
@@ -95,11 +97,12 @@ class WebTest extends PHPUnit_Extensions_Selenium2TestCase
      * @group cobserve
      * 不正なNGリスト登録の呼び出しテスト
      */
-    public function xtestInvalidEntryNG() {
+    public function xtestInvalidEntryNG()
+    {
         // 現在のアクセス失敗回数を数える
         $before = InvalidAccessTable::all()->count();
 
-        $key = "ngkey";
+        $key = 'ngkey';
         $this->url(self::DOMAIN.self::OBSERVE_URL."/$key/ng");
         $this->url(self::DOMAIN.self::OBSERVE_URL."/$key/ng");
         $this->url(self::DOMAIN.self::OBSERVE_URL."/$key/ng");
@@ -108,15 +111,16 @@ class WebTest extends PHPUnit_Extensions_Selenium2TestCase
 
         // 5つふえていることを確認
         $after = InvalidAccessTable::all()->count();
-        $this->assertEquals($before+5, $after);
+        $this->assertEquals($before + 5, $after);
     }
 
     /**
      * @group cobserve
      * NGを解除するテスト
      */
-    public function xtestReleaseNG() {
-        $key = "";
+    public function xtestReleaseNG()
+    {
+        $key = '';
 
         // NGがあるか
         if (NGIPsTable::all()->count() == 0) {
@@ -138,11 +142,12 @@ class WebTest extends PHPUnit_Extensions_Selenium2TestCase
      * @group cobserve
      * 無効なキーでNGを繰り返して一時停止させるテスト
      */
-    public function xtestInvalidReleaseNG() {
+    public function xtestInvalidReleaseNG()
+    {
         // 現在のアクセス失敗回数を数える
         $before = InvalidAccessTable::all()->count();
 
-        $key = "invalidkey";
+        $key = 'invalidkey';
 
         $this->url(self::DOMAIN.self::OBSERVE_URL."/ng/$key/release");
         $this->url(self::DOMAIN.self::OBSERVE_URL."/ng/$key/release");
@@ -152,8 +157,6 @@ class WebTest extends PHPUnit_Extensions_Selenium2TestCase
 
         // 5つふえていることを確認
         $after = InvalidAccessTable::all()->count();
-        $this->assertEquals($before+5, $after);
+        $this->assertEquals($before + 5, $after);
     }
 }
-
-?>

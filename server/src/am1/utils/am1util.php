@@ -1,13 +1,15 @@
 <?php
 
-namespace Am1\Utils;
+namespace am1\utils;
 
-class Am1Util {
+class am1util
+{
     /**
      * ランダム文字列を作成する
      * @param int $len : 文字数
      */
-    public static function makeRandWords($len) {
+    public static function makeRandWords($len)
+    {
         //$key = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         // 紛らわしい文字は省く
         $key = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -15,7 +17,7 @@ class Am1Util {
         $wd = "";
         for ($i=0; $i<$len; $i++) {
             $wd .= substr($key, rand(0, strlen($key)-1), 1);
-    	}
+        }
 
         return $wd;
     }
@@ -29,7 +31,8 @@ class Am1Util {
      * @param string $body 本文
      * @return bool true=成功 / false=失敗
      */
-    public static function sendMail($to, $from, $fromname, $subject, $body) {
+    public static function sendMail($to, $from, $fromname, $subject, $body)
+    {
         mb_language("Japanese");
         mb_internal_encoding("UTF-8");
         return mb_send_mail(
@@ -40,5 +43,3 @@ class Am1Util {
         );
     }
 }
-
- ?>
