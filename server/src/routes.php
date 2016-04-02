@@ -12,14 +12,14 @@ $app->post('/error', function ($request, $response, $args) {
     $this->util_error;
 
     // パラメーター不足
-    if (
-        !array_key_exists('description', $_POST)
+    if ( !array_key_exists('description', $_POST)
         ||  !array_key_exists('hash', $_POST)) {
         // パラメーター不足
         $this->util_observe_access->entryInvalidAccess(
             $_SERVER['REMOTE_ADDR'],
             $this->settings->SERVICE_NAME,
-            'Invalid Parameter.');
+            'Invalid Parameter.'
+        );
 
         return $this->view->render($response, 'info.html', [
             'info' => 'ok',
@@ -32,7 +32,8 @@ $app->post('/error', function ($request, $response, $args) {
         $this->util_observe_access->entryInvalidAccess(
             $_SERVER['REMOTE_ADDR'],
             $this->settings->SERVICE_NAME,
-            'Invalid JSON.');
+            'Invalid JSON.'
+        );
 
         return $this->view->render($response, 'info.html', [
             'info' => 'ok',
