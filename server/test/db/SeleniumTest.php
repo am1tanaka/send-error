@@ -158,10 +158,13 @@ class WebTest extends \PHPUnit_Extensions_Selenium2TestCase
 
     /**
      * POST送信
+     *
      * @param array $sendarray 送信する連想配列
+     *
      * @return array response=戻ってきたページの情報 / http_response_header=レスポンスヘッダ
      */
-    function postUrl($sendarray) {
+    private function postUrl($sendarray)
+    {
         $data_url = http_build_query($sendarray);
         $data_len = strlen($data_url);
 
@@ -169,17 +172,17 @@ class WebTest extends \PHPUnit_Extensions_Selenium2TestCase
             ERROR_ROOT,
             false,
             stream_context_create(array(
-                'http'=>array(
+                'http' => array(
                     'method' => 'POST',
                     'header' => "Content-Type: application/x-www-form-urlencoded\r\nContent-Length: $data_len\r\n",
-                    'content' => $data_url
-                )
+                    'content' => $data_url,
+                ),
             ))
         );
 
         return array(
             'response' => $res,
-            'http_response_header' => $http_response_header
+            'http_response_header' => $http_response_header,
         );
     }
 
@@ -187,7 +190,8 @@ class WebTest extends \PHPUnit_Extensions_Selenium2TestCase
      * @group error_test
      * エラーを登録するテスト
      */
-    public function xtestEntryError() {
+    public function xtestEntryError()
+    {
         $data = '{"clientWidth":1080,"clientHeight":25,';
         $data .= '"navigator":{"doNotTrack":"unspecified",';
         $data .= '"oscpu":"Intel Mac OS X 10.11","productSub":"20100101",';
@@ -200,8 +204,8 @@ class WebTest extends \PHPUnit_Extensions_Selenium2TestCase
         $hash = hash('crc32', $data);
 
         $res = $this->postUrl(array(
-            'description'=>$data,
-            'hash'=>$hash
+            'description' => $data,
+            'hash' => $hash,
         ));
 
         $this->assertRegExp('/200/', $res['http_response_header'][0]);
@@ -211,28 +215,28 @@ class WebTest extends \PHPUnit_Extensions_Selenium2TestCase
      * @group error_test
      * エラーの失敗チェック
      */
-    public function testInvalidEntryError() {
+    public function testInvalidEntryError()
+    {
         // データを含まない
         $res = $this->postUrl(array(
-            'another1'=>''
+            'another1' => '',
         ));
         $this->assertRegExp('/200/', $res['http_response_header'][0]);
 
         // JSON以外を送信
-        $data = "abc";
+        $data = 'abc';
         $res = $this->postUrl(array(
-            'description'=>$data,
-            'hash'=>hash('crc32', $data)
+            'description' => $data,
+            'hash' => hash('crc32', $data),
         ));
         $this->assertRegExp('/200/', $res['http_response_header'][0]);
 
         // 無効なHASHを送信
         $data = '{"data": 1080}';
         $res = $this->postUrl(array(
-            'description'=>$data,
-            'hash'=>hash('crc32', 'abc')
+            'description' => $data,
+            'hash' => hash('crc32', 'abc'),
         ));
         $this->assertRegExp('/200/', $res['http_response_header'][0]);
-
     }
 }
