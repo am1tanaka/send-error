@@ -48,7 +48,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 
         // クラスを初期化
         if (self::$cerror == null) {
-            self::$cerror = new CError($this->settings['settings']['db']['config']);
+            self::$cerror = new CError($this->settings['settings']);
         }
         if (self::$cobserve == null) {
             self::$cobserve = new CObserveAccess(

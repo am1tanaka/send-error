@@ -26,7 +26,7 @@ class WebTest extends \PHPUnit_Extensions_Selenium2TestCase
 
         // クラスを初期化
         if (self::$cerror == null) {
-            self::$cerror = new CError($this->settings['settings']['db']['config']);
+            self::$cerror = new CError($this->settings['settings']);
         }
         if (self::$cobserve == null) {
             self::$cobserve = new CObserveAccess(
@@ -114,7 +114,7 @@ class WebTest extends \PHPUnit_Extensions_Selenium2TestCase
      * @group cobserve
      * NGを解除するテスト
      */
-    public function testReleaseNG()
+    public function xtestReleaseNG()
     {
         $key = '';
 
@@ -154,5 +154,85 @@ class WebTest extends \PHPUnit_Extensions_Selenium2TestCase
         // 5つふえていることを確認
         $after = InvalidAccessTable::all()->count();
         $this->assertEquals($before + 5, $after);
+    }
+
+    /**
+     * POST送信
+     * @param array $sendarray 送信する連想配列
+     * @return array response=戻ってきたページの情報 / http_response_header=レスポンスヘッダ
+     */
+    function postUrl($sendarray) {
+        $data_url = http_build_query($sendarray);
+        $data_len = strlen($data_url);
+
+        $res = file_get_contents(
+            ERROR_ROOT,
+            false,
+            stream_context_create(array(
+                'http'=>array(
+                    'method' => 'POST',
+                    'header' => "Content-Type: application/x-www-form-urlencoded\r\nContent-Length: $data_len\r\n",
+                    'content' => $data_url
+                )
+            ))
+        );
+
+        return array(
+            'response' => $res,
+            'http_response_header' => $http_response_header
+        );
+    }
+
+    /**
+     * @group error_test
+     * エラーを登録するテスト
+     */
+    public function xtestEntryError() {
+        $data = '{"clientWidth":1080,"clientHeight":25,';
+        $data .= '"navigator":{"doNotTrack":"unspecified",';
+        $data .= '"oscpu":"Intel Mac OS X 10.11","productSub":"20100101",';
+        $data .= '"cookieEnabled":true,"buildID":"20160315153207",';
+        $data .= '"appCodeName":"Mozilla","appName":"Netscape",';
+        $data .= '"appVersion":"5.0 (Macintosh)","platform":"MacIntel",';
+        $data .= '"userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:45.0) Gecko/20100101 Firefox/45.0",';
+        $data .= '"product":"Gecko","language":"ja","onLine":true}}';
+
+        $hash = hash('crc32', $data);
+
+        $res = $this->postUrl(array(
+            'description'=>$data,
+            'hash'=>$hash
+        ));
+
+        $this->assertRegExp('/200/', $res['http_response_header'][0]);
+    }
+
+    /**
+     * @group error_test
+     * エラーの失敗チェック
+     */
+    public function testInvalidEntryError() {
+        // データを含まない
+        $res = $this->postUrl(array(
+            'another1'=>''
+        ));
+        $this->assertRegExp('/200/', $res['http_response_header'][0]);
+
+        // JSON以外を送信
+        $data = "abc";
+        $res = $this->postUrl(array(
+            'description'=>$data,
+            'hash'=>hash('crc32', $data)
+        ));
+        $this->assertRegExp('/200/', $res['http_response_header'][0]);
+
+        // 無効なHASHを送信
+        $data = '{"data": 1080}';
+        $res = $this->postUrl(array(
+            'description'=>$data,
+            'hash'=>hash('crc32', 'abc')
+        ));
+        $this->assertRegExp('/200/', $res['http_response_header'][0]);
+
     }
 }

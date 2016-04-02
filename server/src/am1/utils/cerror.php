@@ -18,16 +18,20 @@ class CError
     public static $capsule = null;
     /** キーコードの長さ*/
     const KEY_LENGTH = 16;
+    /** セッティングを記録*/
+    private $settings;
 
     /**
      * コンストラクタ。Illuminate Databaseの接続を開始
      */
-    public function __construct($setting)
+    public function __construct($set)
     {
+        $this->settings = $set;
+
         if (self::$capsule == null) {
             self::$capsule = new Capsule;
 
-            self::$capsule->addConnection($setting);
+            self::$capsule->addConnection($set['db']);
             self::$capsule->setAsGlobal();
             self::$capsule->bootEloquent();
         }
@@ -64,6 +68,23 @@ class CError
         $err->keycode = $key;
         $err->description = $json;
         $err->save();
+
+        // メール報告
+        $subject = '[AM1-SYS]エラー報告';
+        $mes = "エラーが報告されました。以下で参照と削除ができます。\n";
+        $mes .= "\n";
+        $mes .= '参照: '.ERROR_ROOT."/$key\n";
+        $mes .= '削除: '.ERROR_ROOT."/$key/delete\n";
+        $mes .= "\n----\n";
+        $mes .= $this->settings['app']['SERVICE_NAME']."\n";
+
+        Am1Util::sendMail(
+            ADMIN_EMAIL,
+            SYS_EMAIL,
+            $this->settings['app']['SERVICE_NAME'],
+            $subject,
+            $mes
+        );
     }
 
     /**

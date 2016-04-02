@@ -5,6 +5,8 @@
  */
 
 return [
+    // サービス名
+    'SERVICE_NAME' => 'AmuseOneErrorSystem',
     // キーコードの長さ
     'KEYCODE_LENGTH' => 16
 ];

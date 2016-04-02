@@ -28,10 +28,8 @@ $container['logger'] = function ($c) {
 
 // CError
 $container['util_error'] = function ($c) {
-    $settings = $c->get('settings')['db'];
-
     // クラスを初期化
-    $error = new Am1\Utils\CError($settings['config']);
+    $error = new Am1\Utils\CError($c->get('settings'));
     return $error;
 };
 

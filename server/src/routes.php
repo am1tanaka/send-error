@@ -5,6 +5,63 @@ require_once './src/am1/utils/cobserve-access.php';
 
 // Routes
 
+// エラー処理
+/** エラーの登録*/
+$app->post('/error', function($request, $response, $args) {
+    // エラーを初期化
+    $this->util_error;
+
+    // パラメーター不足
+    if (
+        !array_key_exists('description', $_POST)
+        ||  !array_key_exists('hash', $_POST)) {
+        // パラメーター不足
+        $this->util_observe_access->entryInvalidAccess(
+            $_SERVER['REMOTE_ADDR'],
+            $this->settings->SERVICE_NAME,
+            'Invalid Parameter.');
+        return $this->view->render($response, 'info.html', [
+            'info' => 'ok'
+        ]);
+    }
+
+    // jsonかチェック
+    if (is_null(json_decode($_POST['description']))) {
+        // データが不正
+        $this->util_observe_access->entryInvalidAccess(
+            $_SERVER['REMOTE_ADDR'],
+            $this->settings->SERVICE_NAME,
+            'Invalid JSON.');
+        return $this->view->render($response, 'info.html', [
+            'info' => 'ok'
+        ]);
+    }
+
+    // ハッシュの不一致
+    $hash = hash('crc32', $_POST['description']);
+    if ($hash !== $_POST['hash']) {
+        // ハッシュが不一致
+        $this->util_observe_access->entryInvalidAccess(
+            $_SERVER['REMOTE_ADDR'],
+            $this->settings->SERVICE_NAME,
+            'Not Match Hash. Expected='.$hash."/Sended=".$_POST['hash']
+        );
+        return $this->view->render($response, 'info.html', [
+            'info' => 'ok'
+        ]);
+    }
+
+    // 登録
+    $this->util_error->entryErrorData($_POST['description']);
+    return $this->view->render(
+        $response,
+        'info.html',
+        [
+            'info' => 'entry ok.'
+        ]
+    );
+});
+
 // 不正アクセスAPI
 /* 一時停止を解除する*/
 $app->get('/invalid-access/{key}/release', function ($request, $response, $args) {
