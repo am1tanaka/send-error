@@ -31,10 +31,10 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
         if ($this->pdo_conn == null) {
             if (self::$pdo == null) {
                 self::$pdo = new \PDO(
-                'mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset=utf8',
-                TEST_DB_USER,
-                TEST_DB_PASS
-            );
+                    'mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset=utf8',
+                    TEST_DB_USER,
+                    TEST_DB_PASS
+                );
             }
 
             $this->pdo_conn = $this->createDefaultDBConnection(self::$pdo);
