@@ -293,7 +293,7 @@ class WebTest extends \PHPUnit_Extensions_Selenium2TestCase
      * @group localtest
      * エラーの削除テスト
      */
-    public function testDeleteError()
+    public function xtestDeleteError()
     {
         // 登録されているキーを一つ取得
         $key = $this->getErrorKey();
@@ -302,9 +302,19 @@ class WebTest extends \PHPUnit_Extensions_Selenium2TestCase
         // 削除アクセス
         $this->url(ERROR_ROOT."/$key/delete");
 
-        sleep(60);
-
         // チェック
         $this->assertRegExp('/info/', $this->title());
+    }
+
+    /**
+     * @group delete_error
+     * @group localtest
+     * 不正なエラーの削除テスト
+     */
+    public function testInvalidDeleteError()
+    {
+        $this->url(ERROR_ROOT.'/%/delete');
+
+        $this->assertEquals('ok', $this->byId('info')->text());
     }
 }
