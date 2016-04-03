@@ -13,8 +13,7 @@ $app->post('/error', function ($request, $response, $args) {
     $this->util_error;
 
     // パラメーター不足
-    if (!array_key_exists('description', $_POST)
-        ||  !array_key_exists('hash', $_POST)) {
+    if (!array_key_exists('description', $_POST)) {
         // パラメーター不足
         $this->util_observe_access->entryInvalidAccess(
             $_SERVER['REMOTE_ADDR'],
@@ -41,6 +40,7 @@ $app->post('/error', function ($request, $response, $args) {
         ]);
     }
 
+    /*
     // ハッシュの不一致
     $hash = hash('crc32', $_POST['description']);
     if ($hash !== $_POST['hash']) {
@@ -55,7 +55,8 @@ $app->post('/error', function ($request, $response, $args) {
             'info' => 'ok'
         ]);
     }
-
+    */
+    
     // 登録
     $this->util_error->entryErrorData($_POST['description']);
 
