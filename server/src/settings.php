@@ -5,23 +5,23 @@
 return [
     'settings' => [
         // アプリ用共通設定
-        'app' => require __DIR__ . '/settings-app.php',
+        'app' => require __DIR__.'/settings-app.php',
 
         // エラー状況を表示
         'displayErrorDetails' => true, // set to false in production
 
         // Twig settings
         'view' => [
-            'template_path' => __DIR__ . '/../templates/',
+            'template_path' => __DIR__.'/../templates/',
             'options' => [
                 'debug' => true,
-            ]
+            ],
         ],
 
         // Monolog settings
         'logger' => [
             'name' => 'slim-app',
-            'path' => __DIR__ . '/../logs/app.log',
+            'path' => __DIR__.'/../logs/app.log',
         ],
 
         // Illuminate Database settings
@@ -33,7 +33,7 @@ return [
             'password' => DB_PASS,
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
-            'prefix' => ''
-        ]
+            'prefix' => '',
+        ],
     ],
 ];

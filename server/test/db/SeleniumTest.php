@@ -281,6 +281,7 @@ class WebTest extends \PHPUnit_Extensions_Selenium2TestCase
         // 無効なキーで呼び出し
         $this->url(ERROR_ROOT.'/invalid_key');
 
-        sleep(60);
+        // 戻り値がOKなら成功
+        $this->assertEquals('ok', $this->byId('info')->text());
     }
 }

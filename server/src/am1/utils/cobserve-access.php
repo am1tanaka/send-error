@@ -7,8 +7,6 @@
  */
 namespace Am1\Utils;
 
-use Illuminate\Database\Eloquent\Model as Eloquent;
-
 /**
  * アクセス監視用のクラス.
  */
@@ -235,7 +233,7 @@ class CObserveAccess
     {
         $host = substr($host, 0, self::REMOTE_HOST_LENGTH);
         $subject = '[AM1-SYS]NGホストの追加レポート';
-        $mes = "以下のホストの操作ミスが規定数を超えたので、";
+        $mes = '以下のホストの操作ミスが規定数を超えたので、';
         $mes .= "NGリストに追加しました。\n";
         $mes .= "\n";
         $mes .= 'HOST  : '.$host."\n";

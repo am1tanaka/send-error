@@ -7,8 +7,8 @@ require_once './src/am1/error-middleware.php';
 // Routes
 
 // エラー処理
-/** エラーの参照*/
-$app->get('/error/{key}', function($request, $response, $args) {
+/* エラーの参照*/
+$app->get('/error/{key}', function ($request, $response, $args) {
     // キーのデータを取得
     $desc = $this->util_error->getDescriptionArrayFromDB($args['key']);
     if ($desc === false) {
@@ -26,12 +26,11 @@ $app->get('/error/{key}', function($request, $response, $args) {
 
     // 詳細を画面に出力
     return $this->view->render($response, 'view.html', [
-        'datas' => $desc
+        'datas' => $desc,
     ]);
 });
 
-
-/** エラーの登録*/
+/* エラーの登録*/
 $app->post('/error', function ($request, $response, $args) {
     // エラーを初期化
     $this->util_error;
