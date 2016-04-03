@@ -65,19 +65,16 @@ class CError
             if (is_object($v)) {
                 $res = self::makeArrayTable($prefix.$k.'_', $v);
                 $response = array_merge($response, $res);
-            }
-            // 配列の時は、配列の再帰呼び出し
-            elseif (is_array($v)) {
+            } elseif (is_array($v)) {
+                // 配列の時は、配列の再帰呼び出し
                 $res = self::makeArrayTable($prefix.$k.'_', $v);
                 $response = array_merge($response, $res);
-            }
-            // bool値
-            elseif (is_bool($v)) {
+            } elseif (is_bool($v)) {
+                // bool値
                 $bl = $v ? 'true' : 'false';
                 $response[] = ['title' => $prefix.$k, 'data' => $bl];
-            }
-            // 数値や文字列
-            elseif (is_numeric($v) || is_string($v)) {
+            } elseif (is_numeric($v) || is_string($v)) {
+                // 数値や文字列
                 $response[] = ['title' => $prefix.$k, 'data' => $v];
             }
         }
@@ -127,7 +124,7 @@ class CError
      * @param string $key 取り出したいキーコード
      *
      * @return 成功したら取り出したデータを連想� �列に変換して返す。
-     *                                                           失敗したらfalseを返す
+     *                                                             失敗したらfalseを返す
      */
     public function getDescriptionArrayFromDB($key)
     {
