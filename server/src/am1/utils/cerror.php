@@ -128,6 +128,7 @@ class CError
      */
     public function getDescriptionArrayFromDB($key)
     {
+        $key = substr($key, 0, self::KEY_LENGTH);
         $row = ErrorTable::where('keycode', '=', $key);
         if ($row->count() == 0) {
             return false;
@@ -145,6 +146,8 @@ class CError
      */
     public function deleteDataFromDB($key)
     {
+        $key = substr($key, 0, self::KEY_LENGTH);
+
         return ErrorTable::where('keycode', '=', $key)->delete();
     }
 }

@@ -7,29 +7,6 @@ require_once './src/am1/error-middleware.php';
 // Routes
 
 // エラー処理
-/* エラーの参照*/
-$app->get('/error/{key}', function ($request, $response, $args) {
-    // キーのデータを取得
-    $desc = $this->util_error->getDescriptionArrayFromDB($args['key']);
-    if ($desc === false) {
-        // キーが見当たらないのでアクセス失敗に登録
-        $this->util_observe_access->entryInvalidAccess(
-            $_SERVER['REMOTE_ADDR'],
-            $this->settings['app']['SERVICE_NAME'],
-            'Invalid Key: '.$args['key']
-        );
-        //
-        return $this->view->render($response, 'info.html', [
-            'info' => 'ok',
-        ]);
-    }
-
-    // 詳細を画面に出力
-    return $this->view->render($response, 'view.html', [
-        'datas' => $desc,
-    ]);
-});
-
 /* エラーの登録*/
 $app->post('/error', function ($request, $response, $args) {
     // エラーを初期化
@@ -89,6 +66,51 @@ $app->post('/error', function ($request, $response, $args) {
             'info' => 'entry ok.',
         ]
     );
+});
+
+/* エラーの参照*/
+$app->get('/error/{key}', function ($request, $response, $args) {
+    // キーのデータを取得
+    $desc = $this->util_error->getDescriptionArrayFromDB($args['key']);
+    if ($desc === false) {
+        // キーが見当たらないのでアクセス失敗に登録
+        $this->util_observe_access->entryInvalidAccess(
+            $_SERVER['REMOTE_ADDR'],
+            $this->settings['app']['SERVICE_NAME'],
+            'Invalid Key: '.$args['key']
+        );
+        //
+        return $this->view->render($response, 'info.html', [
+            'info' => 'ok',
+        ]);
+    }
+
+    // 詳細を画面に出力
+    return $this->view->render($response, 'view.html', [
+        'datas' => $desc,
+    ]);
+});
+
+/* エラーの削除*/
+$app->get('/error/{key}/delete', function ($request, $response, $args) {
+    $count = $this->util_error->deleteDataFromDB($args['key']);
+    if ($count == 0) {
+        // キーが不正
+        $this->util_observe_access->entryInvalidAccess(
+            $_SERVER['REMOTE_ADDR'],
+            $this->settings['app']['SERVICE_NAME'],
+            'Invalid Key: '.$args['key']
+        );
+
+        return $this->view->render($response, 'info.html', [
+            'info' => 'ok',
+        ]);
+    }
+
+    // 成功
+    return $this->view->render($response, 'info.html', [
+        'info' => '指定のエラーを削除しました。',
+    ]);
 });
 
 // 不正アクセスAPI

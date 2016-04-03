@@ -258,9 +258,10 @@ class WebTest extends \PHPUnit_Extensions_Selenium2TestCase
     /**
      * @depends testEntryError
      * @group localtest
+     * @group entry_error
      * 参照テスト
      */
-    public function testView()
+    public function xtestView()
     {
         // 登録されているキーを一つ取得
         $key = $this->getErrorKey();
@@ -274,14 +275,36 @@ class WebTest extends \PHPUnit_Extensions_Selenium2TestCase
     }
 
     /**
-     * エラーテスト.
+     * @group entry_error
+     * 不正エラー呼び出しテスト
      */
-    public function testInvalidKeyError()
+    public function xtestInvalidKeyError()
     {
         // 無効なキーで呼び出し
         $this->url(ERROR_ROOT.'/invalid_key');
 
         // 戻り値がOKなら成功
         $this->assertEquals('ok', $this->byId('info')->text());
+    }
+
+    /**
+     * @depends testEntryError
+     * @group delete_error
+     * @group localtest
+     * エラーの削除テスト
+     */
+    public function testDeleteError()
+    {
+        // 登録されているキーを一つ取得
+        $key = $this->getErrorKey();
+        $this->assertNotFalse($key, 'error depend.');
+
+        // 削除アクセス
+        $this->url(ERROR_ROOT."/$key/delete");
+
+        sleep(60);
+
+        // チェック
+        $this->assertRegExp('/info/', $this->title());
     }
 }
