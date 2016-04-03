@@ -4,6 +4,7 @@ namespace SeleniumTest;
 
 use Am1\Utils\CError;
 use Am1\Utils\CObserveAccess;
+use Am1\Utils\ErrorTable;
 use Am1\Utils\InvalidAccessTable;
 use Am1\Utils\NGIPsTable;
 
@@ -190,7 +191,7 @@ class WebTest extends \PHPUnit_Extensions_Selenium2TestCase
      * @group error_test
      * エラーを登録するテスト
      */
-    public function xtestEntryError()
+    public function testEntryError()
     {
         $data = '{"clientWidth":1080,"clientHeight":25,';
         $data .= '"navigator":{"doNotTrack":"unspecified",';
@@ -215,7 +216,7 @@ class WebTest extends \PHPUnit_Extensions_Selenium2TestCase
      * @group error_test
      * エラーの失敗チェック
      */
-    public function testInvalidEntryError()
+    public function xtestInvalidEntryError()
     {
         // データを含まない
         $res = $this->postUrl(array(
@@ -238,5 +239,48 @@ class WebTest extends \PHPUnit_Extensions_Selenium2TestCase
             'hash' => hash('crc32', 'abc'),
         ));
         $this->assertRegExp('/200/', $res['http_response_header'][0]);
+    }
+
+    /**
+     * 登録されているエラーデータの最初のキーを返す.
+     *
+     * @return データがあった� �合はstringでキーコード。ない場合はfalse
+     */
+    private function getErrorKey()
+    {
+        if (ErrorTable::count() > 0) {
+            return ErrorTable::first()->keycode;
+        }
+
+        return false;
+    }
+
+    /**
+     * @depends testEntryError
+     * @group localtest
+     * 参照テスト
+     */
+    public function testView()
+    {
+        // 登録されているキーを一つ取得
+        $key = $this->getErrorKey();
+        $this->assertNotFalse($key, 'error depend.');
+
+        // 表示アクセス
+        $this->url(ERROR_ROOT."/$key");
+
+        // チェック
+        $this->assertEquals('ErrorViewer', $this->title());
+    }
+
+    /**
+     * エラーテスト.
+     */
+    public function testInvalidKeyError()
+    {
+        // 無効なキーで呼び出し
+        $this->url(ERROR_ROOT.'/invalid_key');
+
+        sleep(60);
     }
 }

@@ -76,7 +76,7 @@ class CObserveAccess
         $newtbl->save();
 
         // NGチェック
-        $hostapp = InvalidAccessTable::where('remote_host', 'like', $host)->where('app_name', 'like', $appname);
+        $hostapp = InvalidAccessTable::where('remote_host', '=', $host)->where('app_name', '=', $appname);
         $cnt = $hostapp->count();
         if ($cnt >= $this->settings['NG_COUNT']) {
             $this->entryNGListWithHost($host);
@@ -111,7 +111,7 @@ class CObserveAccess
     public function getHostWithKeyInvalidHost($key)
     {
         $key = substr($key, 0, $this->settings['KEYCODE_LENGTH']);
-        $host = InvalidAccessTable::where('keycode', 'like', $key);
+        $host = InvalidAccessTable::where('keycode', '=', $key);
         if ($host->count() == 0) {
             return false;
         }
@@ -143,7 +143,7 @@ class CObserveAccess
         }
 
         // 指定のホストを削除
-        return InvalidAccessTable::where('remote_host', 'like', $host)->delete();
+        return InvalidAccessTable::where('remote_host', '=', $host)->delete();
     }
 
     /**
@@ -211,7 +211,7 @@ class CObserveAccess
     public function entryNGListWithHost($host)
     {
         $host = substr($host, 0, self::REMOTE_HOST_LENGTH);
-        $ng = NGIPsTable::where('remote_host', 'like', $host);
+        $ng = NGIPsTable::where('remote_host', '=', $host);
         // 指定のホストがあるかを確認
         if ($ng->count() == 0) {
             // 新規に登録
@@ -266,7 +266,7 @@ class CObserveAccess
         $keycode = substr($keycode, 0, $this->settings['KEYCODE_LENGTH']);
 
         // 削除
-        $where = NGIPsTable::where('keycode', 'like', $keycode);
+        $where = NGIPsTable::where('keycode', '=', $keycode);
         // 数が0の時、不正なアクセス
         if ($where->count() == 0) {
             $this->entryInvalidAccess($host, self::MY_APP_NAME, "不正なキーでのNG削除要求:$keycode");
@@ -291,6 +291,6 @@ class CObserveAccess
     {
         $host = substr($host, 0, self::REMOTE_HOST_LENGTH);
 
-        return NGIPsTable::where('remote_host', 'like', $host)->count();
+        return NGIPsTable::where('remote_host', '=', $host)->count();
     }
 }

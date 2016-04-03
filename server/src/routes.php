@@ -2,11 +2,36 @@
 
 require_once './src/am1/utils/cerror.php';
 require_once './src/am1/utils/cobserve-access.php';
+require_once './src/am1/error-middleware.php';
 
 // Routes
 
 // エラー処理
-/* エラーの登録*/
+/** エラーの参照*/
+$app->get('/error/{key}', function($request, $response, $args) {
+    // キーのデータを取得
+    $desc = $this->util_error->getDescriptionArrayFromDB($args['key']);
+    if ($desc === false) {
+        // キーが見当たらないのでアクセス失敗に登録
+        $this->util_observe_access->entryInvalidAccess(
+            $_SERVER['REMOTE_ADDR'],
+            $this->settings['app']['SERVICE_NAME'],
+            'Invalid Key: '.$args['key']
+        );
+        //
+        return $this->view->render($response, 'info.html', [
+            'info' => 'ok',
+        ]);
+    }
+
+    // 詳細を画面に出力
+    return $this->view->render($response, 'view.html', [
+        'datas' => $desc
+    ]);
+});
+
+
+/** エラーの登録*/
 $app->post('/error', function ($request, $response, $args) {
     // エラーを初期化
     $this->util_error;
@@ -17,7 +42,7 @@ $app->post('/error', function ($request, $response, $args) {
         // パラメーター不足
         $this->util_observe_access->entryInvalidAccess(
             $_SERVER['REMOTE_ADDR'],
-            $this->settings->SERVICE_NAME,
+            $this->settings['app']['SERVICE_NAME'],
             'Invalid Parameter.'
         );
 
@@ -31,7 +56,7 @@ $app->post('/error', function ($request, $response, $args) {
         // データが不正
         $this->util_observe_access->entryInvalidAccess(
             $_SERVER['REMOTE_ADDR'],
-            $this->settings->SERVICE_NAME,
+            $this->settings['app']['SERVICE_NAME'],
             'Invalid JSON.'
         );
 
@@ -46,7 +71,7 @@ $app->post('/error', function ($request, $response, $args) {
         // ハッシュが不一致
         $this->util_observe_access->entryInvalidAccess(
             $_SERVER['REMOTE_ADDR'],
-            $this->settings->SERVICE_NAME,
+            $this->settings['app']['SERVICE_NAME'],
             'Not Match Hash. Expected='.$hash.'/Sended='.$_POST['hash']
         );
 
@@ -142,10 +167,3 @@ $app->get('/test', function ($request, $respone, $args) {
         'datas' => $this->utils_error->convJSON2Array($data),
     ]);
 });
-
-/* キーを指定して該当するデータがあれば表示する*/
-$app->get('/{key}', function ($request, $response, $args) {
-    return $this->view->render($response, 'view.html', [
-        'key' => $args['key'],
-    ]);
-})->setName('view');
