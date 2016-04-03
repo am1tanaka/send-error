@@ -11,13 +11,14 @@ class CError {
      */
     static sendError(url, appname, add) {
         var senddata = CError.makeParams(appname, add);
+
         $.post(
-            url,
-            {
-                description: senddata
+            url, {
+                description: senddata,
+                hash: CRC32B.crc32b(senddata)
             },
-            function() {
-                alert("success");
+            function(data) {
+                alert(data);
             }
         );
     }

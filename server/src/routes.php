@@ -52,7 +52,7 @@ $app->post('/error', function ($request, $response, $args) {
         );
 
         return $this->view->render($response, 'info.html', [
-            'info' => 'ok',
+            'info' => 'ok'
         ]);
     }
 
@@ -187,4 +187,9 @@ $app->get('/test', function ($request, $respone, $args) {
     return $this->view->render($respone, 'view.html', [
         'datas' => $this->utils_error->convJSON2Array($data),
     ]);
+});
+
+/** アプリ側*/
+$app->get('/app', function($request, $response, $args) {
+    return $this->view->render($response, 'testapp.html');
 });
