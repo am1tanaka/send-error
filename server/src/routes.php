@@ -56,7 +56,7 @@ $app->post('/error', function ($request, $response, $args) {
         ]);
     }
     */
-    
+
     // 登録
     $this->util_error->entryErrorData($_POST['description']);
 
@@ -190,7 +190,7 @@ $app->get('/test', function ($request, $respone, $args) {
     ]);
 });
 
-/** アプリ側*/
-$app->get('/app', function($request, $response, $args) {
+/* アプリ側*/
+$app->get('/app', function ($request, $response, $args) {
     return $this->view->render($response, 'testapp.html');
 });

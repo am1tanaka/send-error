@@ -1,5 +1,7 @@
 /**
  * エラーを報告するためのJavaScriptクラス
+ * 接続先アドレス、アプリ名、報告したい内容を設定したオブジェクト、必要な場合は送信後の
+ * メッセージとステータスコードを受け取るコールバックを設定して、CError.sendErrorを呼び出す。
  * @copyright 2016 YuTanaka@AmuseOne
  */
 class CError {
@@ -8,19 +10,22 @@ class CError {
      * @param string url 接続先
      * @param string appname アプリ名
      * @param object add 追加要素
+     * @param function cb コールバック関数。第１引数にステータスコード、第２引数にメッセージを渡す
      */
-    static sendError(url, appname, add) {
+    static sendError(url, appname, add, cb) {
         var senddata = CError.makeParams(appname, add);
 
         $.post(
             url, {
                 description: senddata,
                 hash: CRC32B.crc32b(senddata)
-            },
-            function(data) {
-                alert(data);
             }
-        );
+        ).always(function(responseText, textStatus, xhr) {
+            // 通信後の処理
+            if (typeof cb == "function") {
+                cb(responseText, xhr.status);
+            }
+        });
     }
 
     /**

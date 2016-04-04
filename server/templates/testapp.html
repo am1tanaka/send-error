@@ -20,7 +20,15 @@
     <script src="./lib/crc32b.js"></script>
     <script>
         function sendError() {
-            CError.sendError('http://0.0.0.0:8080/error', 'TestApp', '');
+            CError.sendError(
+                'http://0.0.0.0:8080/error',
+                'TestApp',
+                '',
+                function(text, code) {
+                    alert(text);
+                    alert(code);
+                }
+            );
         }
     </script>
 </body>
