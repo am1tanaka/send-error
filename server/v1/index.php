@@ -1,5 +1,4 @@
 <?php
-
 require_once __DIR__.'/../src/config/config-common.php';
 
 if (PHP_SAPI == 'cli-server') {

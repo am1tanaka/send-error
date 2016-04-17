@@ -27,7 +27,7 @@ $container['logger'] = function ($c) {
 };
 
 // CError
-$container['util_error'] = function ($c) {
+$container['utils_error'] = function ($c) {
     // クラスを初期化
     $error = new Am1\Utils\CError($c->get('settings'));
     return $error;

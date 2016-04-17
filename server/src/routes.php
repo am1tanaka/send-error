@@ -1,8 +1,10 @@
 <?php
 
+/*
 require_once './src/am1/utils/cerror.php';
 require_once './src/am1/utils/cobserve-access.php';
 require_once './src/am1/error-middleware.php';
+*/
 
 // Routes
 
