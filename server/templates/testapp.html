@@ -8,7 +8,8 @@
 </head>
 <body>
 
-    <input type='button' class='btn btn-primary' onClick='sendError()' id='btnSendError' value='エラー発生' />
+    <textarea class="form-control" rows="3" id="error_text"></textarea>
+    <input type='button' class='btn btn-primary' onClick='sendError()' id='btnSendError' value='エラー登録テスト' />
 
     <script
     			  src="https://code.jquery.com/jquery-2.2.2.min.js"
@@ -17,13 +18,12 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script src="./lib/cerror.js"></script>
-    <script src="./lib/crc32b.js"></script>
     <script>
         function sendError() {
             CError.sendError(
-                'http://0.0.0.0:8080/error',
+                '{{error_url}}',
                 'TestApp',
-                '',
+                {mymessage: $('#error_text').val()},
                 function(text, code) {
                     alert(text);
                     alert(code);

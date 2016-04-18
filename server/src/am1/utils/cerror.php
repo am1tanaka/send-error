@@ -103,7 +103,7 @@ class CError
         $subject = '[AM1-SYS]エラー報告';
         $mes = "エラーが報告されました。以下で参照と削除ができます。\n";
         $mes .= "\n";
-        $mes .= '参照: '.ERROR_ROOT."/$key\n";
+        $mes .= '参照: '.ERROR_ROOT."/$key\n\n";
         $mes .= '削除: '.ERROR_ROOT."/$key/delete\n";
         $mes .= "\n----\n";
         $mes .= $this->settings['app']['SERVICE_NAME']."\n";

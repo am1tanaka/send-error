@@ -17,8 +17,7 @@ class CError {
 
         $.post(
             url, {
-                description: senddata,
-                hash: CRC32B.crc32b(senddata)
+                description: senddata
             }
         ).always(function(responseText, textStatus, xhr) {
             // 通信後の処理

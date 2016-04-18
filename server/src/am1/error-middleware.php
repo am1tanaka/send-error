@@ -16,7 +16,7 @@ class EntryErrorMiddleWare
         $response->getBody()->write('before<br/>');
         $response->getBody()->write($_POST['description'].'<br/>');
         $route = $request->getAttribute('route');
-        if ($app->util_error) {
+        if ($app->utils_error) {
             $response->getBody()->write('body ok<br/>');
         } else {
             $response->getBody()->write('body ng<br/>');

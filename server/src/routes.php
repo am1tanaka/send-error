@@ -12,7 +12,7 @@ require_once './src/am1/error-middleware.php';
 /* エラーの登録*/
 $app->post('/error', function ($request, $response, $args) {
     // エラーを初期化
-    $this->util_error;
+    $this->utils_error;
 
     // パラメーター不足
     if (!array_key_exists('description', $_POST)) {
@@ -60,7 +60,7 @@ $app->post('/error', function ($request, $response, $args) {
     */
 
     // 登録
-    $this->util_error->entryErrorData($_POST['description']);
+    $this->utils_error->entryErrorData($_POST['description']);
 
     return $this->view->render(
         $response,
@@ -74,7 +74,7 @@ $app->post('/error', function ($request, $response, $args) {
 /* エラーの参照*/
 $app->get('/error/{key}', function ($request, $response, $args) {
     // キーのデータを取得
-    $desc = $this->util_error->getDescriptionArrayFromDB($args['key']);
+    $desc = $this->utils_error->getDescriptionArrayFromDB($args['key']);
     if ($desc === false) {
         // キーが見当たらないのでアクセス失敗に登録
         $this->util_observe_access->entryInvalidAccess(
@@ -96,7 +96,7 @@ $app->get('/error/{key}', function ($request, $response, $args) {
 
 /* エラーの削除*/
 $app->get('/error/{key}/delete', function ($request, $response, $args) {
-    $count = $this->util_error->deleteDataFromDB($args['key']);
+    $count = $this->utils_error->deleteDataFromDB($args['key']);
     if ($count == 0) {
         // キーが不正
         $this->util_observe_access->entryInvalidAccess(
@@ -120,7 +120,7 @@ $app->get('/error/{key}/delete', function ($request, $response, $args) {
 /* 一時停止を解除する*/
 $app->get('/invalid-access/{key}/release', function ($request, $response, $args) {
     // エラーを初期化
-    $this->util_error;
+    $this->utils_error;
 
     $res = $this->util_observe_access->releaseInvalidAccess($args['key'], $_SERVER['REMOTE_ADDR']);
     if ($res == 0) {
@@ -138,7 +138,7 @@ $app->get('/invalid-access/{key}/release', function ($request, $response, $args)
 /* NGリストに登録する*/
 $app->get('/invalid-access/{key}/ng', function ($request, $response, $args) {
     // エラーを初期化
-    $this->util_error;
+    $this->utils_error;
 
     // NGリストへの追加処理
     $res = $this->util_observe_access->entryNGList($args['key'], $_SERVER['REMOTE_ADDR']);
@@ -159,7 +159,7 @@ $app->get('/invalid-access/{key}/ng', function ($request, $response, $args) {
 /* NGリストから指定のキーを削除*/
 $app->get('/invalid-access/ng/{key}/release', function ($request, $response, $args) {
     // エラーを初期化
-    $this->util_error;
+    $this->utils_error;
 
     // NG解除処理
     $res = $this->util_observe_access->releaseNGList($args['key'], $_SERVER['REMOTE_ADDR']);
@@ -194,5 +194,7 @@ $app->get('/test', function ($request, $respone, $args) {
 
 /* アプリ側*/
 $app->get('/app', function ($request, $response, $args) {
-    return $this->view->render($response, 'testapp.html');
+    return $this->view->render($response, 'testapp.html', [
+        'error_url' => ERROR_ROOT
+    ]);
 });
