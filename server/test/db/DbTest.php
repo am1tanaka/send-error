@@ -7,6 +7,7 @@ namespace DbTest;
 use Am1\Utils\Am1Util;
 use Am1\Utils\CError;
 use Am1\Utils\CObserveAccess;
+use Am1\Utils\ErrorTable;
 use Am1\Utils\InvalidAccessTable;
 use Am1\Utils\NGIPsTable;
 
@@ -87,6 +88,47 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
         // 成功チェック
         $succ = self::$cerror->getDescriptionArrayFromDB('0123456789112345');
         $this->assertEquals(1080, $succ['clientWidth']);
+    }
+
+    /**
+     * @group cerror
+     * 同じデータを登録した時に、個別にデータが登録されないことをチェック
+     */
+    public function testSameError() {
+        // テストデータを読み込む
+        $data = file_get_contents(__DIR__.'/entry-test-data.json');
+
+        // テストデータがあるかを確認
+        $wh = ErrorTable::where('description', '=', $data);
+        if ($wh->count() == 0) {
+            // データ登録
+            self::$cerror->entryErrorData($data);
+        }
+
+        // 記録されているデータを取り出す
+        $lastdata = ErrorTable::where('description', '=', $data);
+        $lastcount = ErrorTable::all()->count();
+        $updated_at = $lastdata->take(1)->get()[0]->updated_at;
+
+        echo "\n".$lastcount."\n";
+
+        sleep(1);
+
+        // 重複データ登録
+        self::$cerror->entryErrorData($data);
+
+        // データ取り出し
+        $newdata = ErrorTable::where('description', '=', $data);
+
+        // データが増えていないチェック
+        $this->assertEquals($lastcount, ErrorTable::all()->count());
+
+        // 更新時間が変更になっているチェック
+        $this->assertNotEquals($updated_at, $newdata->take(1)->get()[0]->updated_at);
+
+        // 違うデータは追加
+        self::$cerror->entryErrorData("append");
+        $this->assertEquals($lastcount+1, ErrorTable::all()->count());
     }
 
     /**

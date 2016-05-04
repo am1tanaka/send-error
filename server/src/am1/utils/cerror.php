@@ -88,6 +88,14 @@ class CError
      */
     public function entryErrorData($json, $key = '')
     {
+        // 同一内容のdescriptionがないことを確認する
+        $wh = ErrorTable::where('description', '=', $json);
+        if ($wh->count() > 0) {
+            // 存在するので、時間を更新だけして終了
+            $wh->take(1)->get()[0]->touch();
+            return;
+        }
+
         // キーを作成
         if (strlen($key) !== self::KEY_LENGTH) {
             $key = Am1Util::makeRandWords(self::KEY_LENGTH);
