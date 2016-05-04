@@ -60,6 +60,11 @@ class CError
     {
         $response = [];
 
+        if (!is_object($obj) && !is_array($obj)) {
+            $response[] = ['title' => 'message', 'data' => $obj];
+            return $response;
+        }
+
         foreach ($obj as $k => $v) {
             // オブジェクトの時はこの関数を再帰呼び出し
             if (is_object($v)) {
