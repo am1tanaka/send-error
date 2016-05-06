@@ -90,6 +90,9 @@ class CError
     /**
      * JSON文字列をエラーデータベースに登録する。
      * キーを指定した場合はそのキーで。キーを指定していない場合は自動生成する.
+     * @param string $json 登録するJSON文字列
+     * @param string $key 省略するとキーを自動生成する。指定するとそのキーで登録
+     * @return bool true=成功 / false=失敗
      */
     public function entryErrorData($json, $key = '')
     {
@@ -98,7 +101,7 @@ class CError
         if ($wh->count() > 0) {
             // 存在するので、時間を更新だけして終了
             $wh->take(1)->get()[0]->touch();
-            return;
+            return true;
         }
 
         // キーを作成
@@ -128,6 +131,8 @@ class CError
             $subject,
             $mes
         );
+
+        return true;
     }
 
     /**

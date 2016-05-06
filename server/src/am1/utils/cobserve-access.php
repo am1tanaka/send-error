@@ -99,6 +99,18 @@ class CObserveAccess
     }
 
     /**
+     * 指定のアドレスがいくつ不正テーブルに登録されているかを返す
+     * @param string $addr リモートホスト
+     * @param string $appname アプリ名
+     * @return number 登録されているデータ個数
+     */
+    public function invalidAccessTableCount($addr, $appname) {
+        // NGチェック
+        $hostapp = InvalidAccessTable::where('remote_host', '=', $addr)->where('app_name', '=', $appname);
+        return $hostapp->count();
+    }
+
+    /**
      * 指定のキーコードに対応するホストをアクセス失敗テーブルから探して返す。
      * 見つからない場合はfalse.
      *
@@ -290,5 +302,29 @@ class CObserveAccess
         $host = substr($host, 0, self::REMOTE_HOST_LENGTH);
 
         return NGIPsTable::where('remote_host', '=', $host)->count();
+    }
+
+    /**
+     * 指定のホストを、不正アクセスとNGリストの両方から削除する。
+     * 登録が成功して、NG処理が不要になった際に呼び出す
+     * @param string $host 削除対象のリモートホストアドレス
+     * @param string $appname 削除対象のアプリめい
+     *
+     */
+    public function releaseInvalidAndNG($host, $appname) {
+        $host = substr($host, 0, self::REMOTE_HOST_LENGTH);
+        $appname = substr($appname, 0, self::APP_NAME_LENGTH);
+
+        // 不正アクセスを削除する
+        $invs = InvalidAccessTable::where('remote_host', '=', $host)->where('app_name', '=', $appname);
+        if ($invs->count() > 0) {
+            $invs->delete();
+        }
+
+        // NGリストを削除
+        $ngs = NGIPsTable::where('remote_host', '=', $host);
+        if ($ngs->count() > 0) {
+            $ngs->delete();
+        }
     }
 }

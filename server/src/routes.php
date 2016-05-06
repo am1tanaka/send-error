@@ -60,7 +60,9 @@ $app->post('/error', function ($request, $response, $args) {
     */
 
     // 登録
-    $this->utils_error->entryErrorData($_POST['description']);
+    if ($this->utils_error->entryErrorData($_POST['description'])) {
+        $this->util_observe_access->releaseInvalidAndNG($_SERVER['REMOTE_ADDR'], $this->settings['app']['SERVICE_NAME']);
+    }
 
     return $this->view->render(
         $response,

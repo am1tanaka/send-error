@@ -191,7 +191,7 @@ class WebTest extends \PHPUnit_Extensions_Selenium2TestCase
      * @group error_test
      * エラーを登録するテスト
      */
-    public function testEntryError()
+    public function xtestEntryError()
     {
         $data = '{"clientWidth":1080,"clientHeight":25,';
         $data .= '"navigator":{"doNotTrack":"unspecified",';
@@ -311,7 +311,7 @@ class WebTest extends \PHPUnit_Extensions_Selenium2TestCase
      * @group localtest
      * 不正なエラーの削除テスト
      */
-    public function testInvalidDeleteError()
+    public function xtestInvalidDeleteError()
     {
         $this->url(ERROR_ROOT.'/%/delete');
 
