@@ -69,6 +69,39 @@ class WebTest extends \PHPUnit_Extensions_Selenium2TestCase
     }
 
     /**
+     * エラー登録成功時に、不正アクセスとNGリストを解除するテスト
+     */
+    public function testReleaseInvNGWhenSuccess() {
+        // 不正アクセスとNGを登録
+        self::$cobserve->entryInvalidAccess('127.0.0.1', 'AmuseOneErrorSystem', 'errormess');
+        self::$cobserve->entryInvalidAccess('127.0.0.1', 'AmuseOneErrorSystem', 'errormess');
+        self::$cobserve->entryNGListWithHost('127.0.0.1');
+
+        $this->assertNotEquals(0, self::$cobserve->invalidAccessTableCount('127.0.0.1', 'AmuseOneErrorSystem'));
+        $this->assertNotEquals(0, self::$cobserve->isNG('127.0.0.1'));
+
+        // エラー登録
+        $data = '{"clientWidth":1080,"clientHeight":25,';
+        $data .= '"navigator":{"doNotTrack":"unspecified",';
+        $data .= '"oscpu":"Intel Mac OS X 10.11","productSub":"20100101",';
+        $data .= '"cookieEnabled":true,"buildID":"20160315153207",';
+        $data .= '"appCodeName":"Mozilla","appName":"Netscape",';
+        $data .= '"appVersion":"5.0 (Macintosh)","platform":"MacIntel",';
+        $data .= '"userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:45.0) Gecko/20100101 Firefox/45.0",';
+        $data .= '"product":"Gecko","language":"ja","onLine":true}}';
+
+        $res = $this->postUrl(array(
+            'description' => $data
+        ));
+
+        $this->assertRegExp('/200/', $res['http_response_header'][0]);
+
+        // 削除チェック
+        $this->assertEquals(0, self::$cobserve->invalidAccessTableCount('127.0.0.1', 'AmuseOneErrorSystem'), 'check clear invalid.');
+        $this->assertEquals(0, self::$cobserve->isNG('127.0.0.1'), 'check clear ng.');
+    }
+
+    /**
      * @group cobserve
      * NGリストへの登録呼び出しのテスト
      */

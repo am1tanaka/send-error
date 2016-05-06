@@ -174,7 +174,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * 成功したら、これまで登録されていた不正なアクセスを削除するテスト
      */
-    public function testDeleteInvWhenSuccess() {
+    public function xtestDeleteInvWhenSuccess() {
         // 不正なアクセスを登録
         self::$cobserve->entryInvalidAccess('localhost', 'DbTest', 'errormess');
         self::$cobserve->entryInvalidAccess('localhost', 'DbTest', 'errormess');
