@@ -14,6 +14,13 @@ $app->post('/error', function ($request, $response, $args) {
     // エラーを初期化
     $this->utils_error;
 
+    // リモートホストがNGリストの場合は却下
+    if ($this->util_observe_access->isNG($_SERVER['REMOTE_ADDR']) > 0) {
+        return $this->view->render($response, 'info.html', [
+            'info' => 'ok(1)',
+        ]);
+    }
+
     // パラメーター不足
     if (!array_key_exists('description', $_POST)) {
         // パラメーター不足
