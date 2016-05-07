@@ -55,15 +55,15 @@ class CObserveAccess
      */
     public function entryInvalidAccess($host, $appname, $err)
     {
-        // NGリストに登録されているホストの場合はすぐにアクセス停止を返す
-        if ($this->isNG($host)) {
-            return false;
-        }
-
         // データの長さを調整
         $host = substr($host, 0, self::REMOTE_HOST_LENGTH);
         $appname = substr($appname, 0, self::APP_NAME_LENGTH);
         $err = substr($err, 0, self::ERROR_LENGTH);
+
+        // NGリストに登録されているホストの場合はすぐにアクセス停止を返す
+        if ($this->isNG($host)) {
+            return false;
+        }
 
         // データを登録する
         $newtbl = new InvalidAccessTable();
@@ -105,6 +105,9 @@ class CObserveAccess
      * @return number 登録されているデータ個数
      */
     public function invalidAccessTableCount($addr, $appname) {
+        $addr = substr($addr, 0, self::REMOTE_HOST_LENGTH);
+        $appname = substr($appname, 0, self::APP_NAME_LENGTH);
+
         // NGチェック
         $hostapp = InvalidAccessTable::where('remote_host', '=', $addr)->where('app_name', '=', $appname);
         return $hostapp->count();
@@ -121,6 +124,7 @@ class CObserveAccess
     public function getHostWithKeyInvalidHost($key)
     {
         $key = substr($key, 0, $this->settings['KEYCODE_LENGTH']);
+
         $host = InvalidAccessTable::where('keycode', '=', $key);
         if ($host->count() == 0) {
             return false;
@@ -139,6 +143,9 @@ class CObserveAccess
      */
     public function releaseInvalidAccess($key, $remote_host)
     {
+        $remote_host = substr($remote_host, 0, self::REMOTE_HOST_LENGTH);
+        $key = substr($key, 0, $this->settings['KEYCODE_LENGTH']);
+
         $host = $this->getHostWithKeyInvalidHost($key);
 
         // 見つからない場合は不正なアクセスなので、不正なアクセスを登録
@@ -195,6 +202,9 @@ class CObserveAccess
      */
     public function entryNGList($key, $remote_host)
     {
+        $key = substr($key, 0, $this->settings['KEYCODE_LENGTH']);
+        $remote_host = substr($remote_host, 0, self::REMOTE_HOST_LENGTH);
+
         $host = $this->getHostWithKeyInvalidHost($key);
         if ($host === false) {
             // 見つからないので不正なアクセス
@@ -221,6 +231,7 @@ class CObserveAccess
     public function entryNGListWithHost($host)
     {
         $host = substr($host, 0, self::REMOTE_HOST_LENGTH);
+
         $ng = NGIPsTable::where('remote_host', '=', $host);
         // 指定のホストがあるかを確認
         if ($ng->count() == 0) {
@@ -244,6 +255,8 @@ class CObserveAccess
     public function reportNG($host, $keycode)
     {
         $host = substr($host, 0, self::REMOTE_HOST_LENGTH);
+        $keycode = substr($keycode, 0, $this->settings['KEYCODE_LENGTH']);
+
         $subject = '[AM1-SYS]NGホストの追加レポート';
         $mes = '以下のホストの操作ミスが規定数を超えたので、';
         $mes .= "NGリストに追加しました。\n";
@@ -274,6 +287,7 @@ class CObserveAccess
     public function releaseNGList($keycode, $host)
     {
         $keycode = substr($keycode, 0, $this->settings['KEYCODE_LENGTH']);
+        $host = substr($host, 0, self::REMOTE_HOST_LENGTH);
 
         // 削除
         $where = NGIPsTable::where('keycode', '=', $keycode);

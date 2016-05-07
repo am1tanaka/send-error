@@ -17,6 +17,8 @@ class CError
     public static $capsule = null;
     /** キーコードの長さ*/
     const KEY_LENGTH = 16;
+    /** エラーの上限*/
+    const ERROR_MAX = 10000;
     /** セッティングを記録*/
     private $settings;
 
@@ -96,6 +98,11 @@ class CError
      */
     public function entryErrorData($json, $key = '')
     {
+        // 文字長さチェック
+        if (mb_strlen($json) > self::ERROR_MAX) {
+            return false;
+        }
+
         // 同一内容のdescriptionがないことを確認する
         $wh = ErrorTable::where('description', '=', $json);
         if ($wh->count() > 0) {
