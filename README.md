@@ -5,6 +5,26 @@ JavaScriptのプログラムでエラーが発生した時に、エラー内容�
 - https://www.sideci.com/github_repositories/54460897/issues
 - [株式会社インフィニットループ PSR-1 基本コーディング規約（日本語）](http://www.infiniteloop.co.jp/docs/psr/psr-1-basic-coding-standard.html)
 
+
+# アクセス
+- POST /error
+  - $_POST[‘description’] JSONの文字列。DBに登録
+- GET /error/{key}
+  - 指定のキーのエラーを表示する
+- GET /error/{key}/delete
+  - 指定のキーのエラーを削除
+- GET /invalid-access/{key}/release
+  - 指定のキーの不正アクセスを削除
+- GET /invalid-access/{key}/ng
+  - 指定のキーの不正アクセすデータを、NGに登録する
+- GET /invalid-access/ng/{key}/release
+  - 指定のキーで登録されているNGのホストを解除する
+- GET /test
+  - テスト登録実行。デバッグ時のみ有効
+- GET /app
+  - エラー送信のテストページを表示。デバッグ時のみ有効
+
+
 # 動作の流れ
 ## JavaScript側
 1. JavaScriptでエラー発生
