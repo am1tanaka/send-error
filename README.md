@@ -1,10 +1,6 @@
 # send-error
 JavaScriptのプログラムでエラーが発生した時に、エラー内容を管理者に報告するためのライブラリとサーバープログラム。また、不正なアクセスの停止などのサービスも用意。
 
-# sideci
-- https://www.sideci.com/github_repositories/54460897/issues
-- [株式会社インフィニットループ PSR-1 基本コーディング規約（日本語）](http://www.infiniteloop.co.jp/docs/psr/psr-1-basic-coding-standard.html)
-
 
 # アクセス
 - POST /error
@@ -23,6 +19,11 @@ JavaScriptのプログラムでエラーが発生した時に、エラー内容�
   - テスト登録実行。デバッグ時のみ有効
 - GET /app
   - エラー送信のテストページを表示。デバッグ時のみ有効
+
+
+# sideci
+- https://www.sideci.com/github_repositories/54460897/issues
+- [株式会社インフィニットループ PSR-1 基本コーディング規約（日本語）](http://www.infiniteloop.co.jp/docs/psr/psr-1-basic-coding-standard.html)
 
 
 # 動作の流れ
