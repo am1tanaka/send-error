@@ -311,7 +311,7 @@ class CObserveAccess
      * @param string $appname 削除対象のアプリめい
      *
      */
-    public function releaseInvalidAndNG($host, $appname) {
+    public function releaseInvalidHost($host, $appname) {
         $host = substr($host, 0, self::REMOTE_HOST_LENGTH);
         $appname = substr($appname, 0, self::APP_NAME_LENGTH);
 
@@ -319,12 +319,6 @@ class CObserveAccess
         $invs = InvalidAccessTable::where('remote_host', '=', $host)->where('app_name', '=', $appname);
         if ($invs->count() > 0) {
             $invs->delete();
-        }
-
-        // NGリストを削除
-        $ngs = NGIPsTable::where('remote_host', '=', $host);
-        if ($ngs->count() > 0) {
-            $ngs->delete();
         }
     }
 }

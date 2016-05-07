@@ -192,7 +192,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 
         // エラーを登録
         if (self::$cerror->entryErrorData('test')) {
-            self::$cobserve->releaseInvalidAndNG('localhost', 'DbTest');
+            self::$cobserve->releaseInvalidHost('localhost', 'DbTest');
 
         }
 

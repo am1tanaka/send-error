@@ -71,14 +71,13 @@ class WebTest extends \PHPUnit_Extensions_Selenium2TestCase
     /**
      * エラー登録成功時に、不正アクセスとNGリストを解除するテスト
      */
-    public function xtestReleaseInvNGWhenSuccess() {
+    public function testReleaseInvNGWhenSuccess() {
         // 不正アクセスとNGを登録
         self::$cobserve->entryInvalidAccess('127.0.0.1', 'AmuseOneErrorSystem', 'errormess');
         self::$cobserve->entryInvalidAccess('127.0.0.1', 'AmuseOneErrorSystem', 'errormess');
-        self::$cobserve->entryNGListWithHost('127.0.0.1');
 
         $this->assertNotEquals(0, self::$cobserve->invalidAccessTableCount('127.0.0.1', 'AmuseOneErrorSystem'));
-        $this->assertNotEquals(0, self::$cobserve->isNG('127.0.0.1'));
+        $this->assertEquals(0, self::$cobserve->isNG('127.0.0.1'));
 
         // エラー登録
         $data = '{"clientWidth":1080,"clientHeight":25,';
