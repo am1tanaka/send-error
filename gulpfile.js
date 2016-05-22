@@ -8,6 +8,56 @@ gulp.task('test', function() {
         .pipe($.phpunit('phpunit --bootstrap ./server/test/bootstrap-mac.php ./server/test'));
 });
 
+// 本番フォルダーにデプロイ
+gulp.task('deploy-rel', function() {
+    var dirs = [
+        'v1',
+        'v1/lib',
+        'src/am1',
+        'src/am1/utils',
+        'src/config',
+        'templates',
+    ];
+    var files = [
+        'src/dependencies.php',
+        'src/middleware.php',
+        'src/routes.php',
+        'src/settings-app.php',
+        'src/settings-rel.php',
+    ];
+    // フォルダーをアップロード
+    for (var dir in dirs)
+    {
+        gulp.src('server/'+dirs[dir]+'/*')
+            .pipe($.ftp({
+                host: settings.FTP_URL,
+                user: settings.FTP_USER,
+                pass: settings.FTP_PASS,
+                remotePath: settings.FTP_REMOTE_PATH+'/'+dirs[dir]
+            }));
+    }
+    // ファイルをアップロード
+    for (var file in files)
+    {
+        gulp.src('server/'+files[file])
+            .pipe($.ftp({
+                host: settings.FTP_URL,
+                user: settings.FTP_USER,
+                pass: settings.FTP_PASS,
+                remotePath: settings.FTP_REMOTE_PATH+'/src'
+            }));
+    }
+    // 必要なファイルをアップロード
+    gulp.src('server/src/config/config-rel.php')
+        .pipe($.rename('config.php'))
+        .pipe($.ftp({
+            host: settings.FTP_URL,
+            user: settings.FTP_USER,
+            pass: settings.FTP_PASS,
+            remotePath: settings.FTP_REMOTE_PATH+'/src/config'
+        }));
+});
+
 // 開発フォルダーにデプロイ
 gulp.task('deploy-dev', function() {
     var dirs = [
@@ -29,9 +79,18 @@ gulp.task('deploy-dev', function() {
                 remotePath: settings.FTP_REMOTE_DEV_PATH+'/'+dirs[dir]
             }));
     }
+    // 必要なファイルをアップロード
+    gulp.src('server/src/config/config-dev.php')
+        .pipe($.rename('config.php'))
+        .pipe($.ftp({
+            host: settings.FTP_URL,
+            user: settings.FTP_USER,
+            pass: settings.FTP_PASS,
+            remotePath: settings.FTP_REMOTE_PATH+'/src/config'
+        }));
 });
 
-// 開発フォルダーにデプロイ
+// 開発フォルダーにv1フォルダーのみデプロイ
 gulp.task('deploy-dev-index', function() {
     var dirs = [
         'v1',
@@ -48,7 +107,7 @@ gulp.task('deploy-dev-index', function() {
     }
 });
 
-// 開発フォルダーにデプロイ
+// 開発フォルダーにsrcフォルダーのみデプロイ
 gulp.task('deploy-dev-src', function() {
     var dirs = [
         'src',

@@ -9,7 +9,7 @@ class CError {
      * エラー情報を指定の送信先に送信する
      * @param string url 接続先
      * @param string appname アプリ名
-     * @param object add 追加要素
+     * @param object add メッセージに追加要素を、タイトルをオブジェクトのプロパティ名、メッセージを値に入れて渡す
      * @param function cb コールバック関数。第１引数にステータスコード、第２引数にメッセージを渡す
      */
     static sendError(url, appname, add, cb) {

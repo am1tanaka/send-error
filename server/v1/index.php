@@ -12,7 +12,7 @@ if (PHP_SAPI == 'cli-server') {
     require __DIR__.'/../src/config/config-mac.php';
     $settings = require __DIR__.'/../src/settings.php';
 } else {
-    require __DIR__.'/../src/config/config-dev.php';
+    require __DIR__.'/../src/config/config.php';
     $settings = require __DIR__.'/../src/settings-rel.php';
 }
 

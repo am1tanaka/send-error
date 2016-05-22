@@ -1,26 +1,27 @@
 <?php
 /**
- * 本番サーバー用の設定
+ * 本番サーバー用の設定.
+ *
  * @copyright 2016 YuTanaka@AmuseOne
  */
 return [
     'settings' => [
-        'app' => require __DIR__ . '/settings-app.php',
+        'app' => require __DIR__.'/settings-app.php',
 
         'displayErrorDetails' => false, // set to false in production
 
         // Twig settings
         'view' => [
-            'template_path' => __DIR__ . '/../templates/',
+            'template_path' => __DIR__.'/../templates/',
             'options' => [
-                'cache' => __DIR__ . '/../cache/',
-            ]
+                'cache' => __DIR__.'/../cache/',
+            ],
         ],
 
         // Monolog settings
         'logger' => [
             'name' => 'slim-app',
-            'path' => __DIR__ . '/../logs/app.log',
+            'path' => __DIR__.'/../logs/app.log',
         ],
 
         // Illuminate Database settings
@@ -32,7 +33,7 @@ return [
             'password' => DB_PASS,
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
-            'prefix' => ''
-        ]
+            'prefix' => '',
+        ],
     ],
 ];
