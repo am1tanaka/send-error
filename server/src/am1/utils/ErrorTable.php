@@ -7,5 +7,5 @@ namespace Am1\Utils;
 // description text
 class ErrorTable extends \Illuminate\Database\Eloquent\Model
 {
-    protected $table = 'error_data';
+    protected $table = TABLE_ERROR;
 }
