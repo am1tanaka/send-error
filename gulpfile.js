@@ -3,13 +3,14 @@ var $ = require('gulp-load-plugins')();
 var settings = require('./config-gulp.js');
 
 // ローカルテスト
-gulp.task('test', function() {
+gulp.task('test', function(done) {
     gulp.src('')
         .pipe($.phpunit('phpunit --bootstrap ./server/test/bootstrap-mac.php ./server/test'));
+    done();
 });
 
 // 本番フォルダーにデプロイ
-gulp.task('deploy-rel', function() {
+gulp.task('deploy-rel', function(done) {
     var dirs = [
         'v1',
         'v1/lib',
@@ -56,10 +57,11 @@ gulp.task('deploy-rel', function() {
             pass: settings.FTP_PASS,
             remotePath: settings.FTP_REMOTE_PATH+'/src/config'
         }));
+    done();
 });
 
 // 開発フォルダーにデプロイ
-gulp.task('deploy-dev', function() {
+gulp.task('deploy-dev', function(done) {
     var dirs = [
         'v1',
         'v1/lib',
@@ -88,10 +90,11 @@ gulp.task('deploy-dev', function() {
             pass: settings.FTP_PASS,
             remotePath: settings.FTP_REMOTE_PATH+'/src/config'
         }));
+    done();
 });
 
 // 開発フォルダーにv1フォルダーのみデプロイ
-gulp.task('deploy-dev-index', function() {
+gulp.task('deploy-dev-index', function(done) {
     var dirs = [
         'v1',
     ];
@@ -105,10 +108,11 @@ gulp.task('deploy-dev-index', function() {
                 remotePath: settings.FTP_REMOTE_DEV_PATH+'/'+dirs[dir]
             }));
     }
+    done();
 });
 
 // 開発フォルダーにsrcフォルダーのみデプロイ
-gulp.task('deploy-dev-src', function() {
+gulp.task('deploy-dev-src', function(done) {
     var dirs = [
         'src',
     ];
@@ -122,4 +126,5 @@ gulp.task('deploy-dev-src', function() {
                 remotePath: settings.FTP_REMOTE_DEV_PATH+'/'+dirs[dir]
             }));
     }
+    done();
 });
